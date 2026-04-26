@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+   <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="aboutus.html">About Us</a></li>
+      <li><a href="Courses.php">Courses</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="signup.html">Signup</a></li>
+    </ul>
+  </nav>
+  <link rel="stylesheet" href="style.css" />
+  <form method="post" action="sl.php">
+    <div class="login_1container">
+      <div class="login_form">
+        <h1>Welcome Back!</h1>
+        <div class="form-group">
+          <label for="Username">Username </label>
+          <input type="string" id="username" name="username" placeholder="Enter your username " required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="passwordl" placeholder="Enter your password" required />
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+        <p class="signup-link">
+          Don't have an account? <a href="signup.html">Sign up here</a><br />
+        </p>
+      </div>
+    </div>
+  </form>
+</body>
+</html>
