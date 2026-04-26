@@ -1,5 +1,5 @@
 .photo{
-float: left;
+  float: left;
 margin-top: 60px;
   margin-right: 1px; 
   margin-bottom: 10px; 
@@ -10,7 +10,6 @@ margin-top: 60px;
   justify-content: center; 
   align-items: center;     
   padding: 40px;
-  
 }
 
 .signup-container {
