@@ -16,47 +16,5 @@
         <li><a href="signup.html">Signup</a></li>
       </ul>
     </nav>
-
-    <div class="courses-container">
-      <h1>Available Courses</h1>
-      <p>
-        Explore our courses designed to help you learn and grow. Each course
-        includes step-by-step lessons, practical examples, and resources to
-        support your learning journey.
-      </p>
-
-      <div class="courses-grid">
-        <?php $courses = [ [ 'title' => 'Introduction to Programming',
-        'description' => 'Learn the basics of programming with hands-on
-        exercises in Python. Perfect for beginners.', 'link' => '#' ], [ 'title'
-        => 'Web Development Fundamentals', 'description' => 'Build your first
-        website using HTML, CSS, and JavaScript. No prior experience required.',
-        'link' => '#' ], [ 'title' => 'Data Structures and Algorithms',
-        'description' => 'Master essential data structures and algorithms to
-        solve complex problems efficiently.', 'link' => '#' ], [ 'title' =>
-        'Database Management', 'description' => 'Learn SQL and database design
-        principles to manage and query data effectively.', 'link' => '#' ], [
-        'title' => 'Machine Learning Basics', 'description' => 'Introduction to
-        machine learning concepts and tools using Python and popular
-        libraries.', 'link' => '#' ], [ 'title' => 'Advanced JavaScript',
-        'description' => 'Deep dive into JavaScript features, frameworks, and
-        best practices for modern web development.', 'link' => '#' ] ]; foreach
-        ($courses as $course) { echo '
-        <div class="course-card">
-          '; echo '
-          <h2>' . htmlspecialchars($course['title']) . '</h2>
-          '; echo '
-          <p>' . htmlspecialchars($course['description']) . '</p>
-          '; echo '<a
-            href="' . htmlspecialchars($course['link']) . '"
-            class="course-btn"
-            >Start Learning</a
-          >'; echo '
-        </div>
-        '; } ?>
-      </div>
-    </div>
-
-    <script src="script.js"></script>
   </body>
 </html>
