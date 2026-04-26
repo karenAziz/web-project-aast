@@ -27,7 +27,7 @@ function ensureUsersTable($con)
 
 ensureUsersTable($con);
 
-$adminUsername = "Yasser";
+$adminUsername = "Yasser";  
 $adminPassword = "Yasser@12";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
