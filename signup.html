@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,49 +8,43 @@
 <body>
   <nav class="navbar">
     <ul>
-      <li><a href="home.html">Home</a></li>
+      <li><a href="index.html">Home</a></li>
       <li><a href="aboutus.html">About Us</a></li>
+      <li><a href="Courses.php">Courses</a></li>
       <li><a href="login.html">Login</a></li>
       <li><a href="signup.html">Signup</a></li>
-      
     </ul>
   </nav>
-   <div class="photo">
+  <div class="photo">
     <img src="imgs\sign-up-form-button-graphic-concept_53876-133556.avif" alt="Signup Photo">
   </div>
-    <link rel="stylesheet" href="style.css" />
-    <form method="post" action="/sl.php">
-      
+  <link rel="stylesheet" href="style.css" />
+  <form method="post" action="sl.php">
     <div class="signup-container">
       <div class="signup-form">
-        <h1>Create Your Account</h1>         
-          <div class="form-group">
-            <label for="fullname"> Full Name </label>
-            <input type="text"  id="fullname" name="fullname"  placeholder="Enter your full name" required />
-          </div>
-
-          <div class="form-group">
-            <label for="email"> Email </label>
-            <input  type="email" id="email" name="emails"  placeholder="Enter your email" required />
-          </div>
-
-          <div class="form-group">
-            <label for="password"> Password </label>
-            <input type="password" id="password" name="passwords" placeholder="Enter a password" required/>
-          </div>
-
-          <div class="form-group">
-            <label for="confirmpassword"> Confirm Password </label>
-            <input  type="password" id="confirmpassword" name="confirmpasswords"  placeholder="Confirm your password" required />
-          </div>
-
-          <button type="submit" class="signup-btn"> Sign Up </button>
-
-          <p class="login-link">
-            Already have an account? <a href="login.html"> Login here </a>
-          </p>
-        </form>
+        <h1>Create Your Account</h1>
+        <div class="form-group">
+          <label for="fullname">Full Name</label>
+          <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="emails" placeholder="Enter your email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="passwords" placeholder="Enter a password" required />
+        </div>
+        <div class="form-group">
+          <label for="confirmpassword">Confirm Password</label>
+          <input type="password" id="confirmpassword" name="confirmpasswords" placeholder="Confirm your password" required />
+        </div>
+        <button type="submit" class="signup-btn">Sign Up</button>
+        <p class="login-link">
+          Already have an account? <a href="login.html">Login here</a>
+        </p>
       </div>
     </div>
+  </form>
 </body>
 </html>
