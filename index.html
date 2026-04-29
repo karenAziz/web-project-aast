@@ -1,79 +1,148 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AAST Extra | Learning Marketplace</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>AASTMT Success Hub</h1>
-
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <h1 class="logo-text">AASTMT</h1>
+          <span class="logo-subtitle">Success Hub</span>
+        </div>
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="aboutus.html">About Us</a></li>
-            <li><a href="Courses.html">Courses</a></li>
-            <li><a href="login.html" class="btn-login">Login</a></li>
-            <li><a href="signup.html" class="btn-signup">Signup</a></li>
+          <li><a href="index.html" class="nav-link active">Home</a></li>
+          <li><a href="aboutus.html" class="nav-link">About Us</a></li>
+          <li><a href="Courses.html" class="nav-link">Courses</a></li>
+          <li><a href="login.html" class="nav-link btn-login">Login</a></li>
+          <li><a href="signup.html" class="nav-link btn-signup">Signup</a></li>
         </ul>
+      </div>
     </nav>
 
     <header class="hero">
-        <div class="hero-content">
-            <h1>Excellence in every skill.</h1>
-            <h3>Access high-quality extra-curricular courses developed by AASTMT experts to boost your professional profile.</h3>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1 class="hero-title">Excellence in Every Skill</h1>
+        <p class="hero-subtitle">
+          Access high-quality extra-curricular courses developed by AASTMT
+          experts to boost your professional profile.
+        </p>
+        <div class="hero-buttons">
+          <a href="Courses.html" class="btn btn-primary">Explore Courses</a>
+          <a href="signup.html" class="btn btn-secondary">Get Started</a>
         </div>
+      </div>
     </header>
 
     <main class="container">
-        <h2 class="section-title">Broad selection of extra courses</h2>
-        <h3 class="section-subtitle">Enhance your academic journey with specialized training modules.</h3>
+      <section class="courses-section">
+        <div class="section-header">
+          <h2 class="section-title">Featured Courses</h2>
+          <p class="section-subtitle">
+            Enhance your academic journey with specialized training modules
+          </p>
+        </div>
 
         <div class="course-grid">
-             <div class="course-card">
-               <img src="../imgs/autocad.webp" alt="AAST Excellence">
-                <div class="card-details">
-                    <h3>Mastering AutoCAD 2026</h3>
-                    <p class="instructor">Eng. Ahmed Ali, AAST Engineering</p>
-                    <div class="rating">4.9 ★★★★★ <span>(1,240)</span></div>
-                    <div class="price"> <span>499.99EGP</span></div>
-                    <div class="badge">Bestseller</div>
-                </div>
+          <div class="course-card">
+            <div class="course-image-wrapper">
+              <img
+                src="../imgs/autocad.webp"
+                alt="Mastering AutoCAD 2026"
+                class="course-img"
+              />
+              <div class="badge bestseller">Bestseller</div>
             </div>
-
-            <div class="course-card">
-                <div class="course-img" style="background-image: url("../imgs/data-analysis-1024x576.webp");"></div>
-                <div class="card-details">
-                    <h3>Python for Data Analysis</h3>
-                    <p class="instructor">AAST Computing Center</p>
-                    <div class="rating">4.8 ★★★★★ <span>(3,100)</span></div>
-                    <div class="price"><span>799.99EGP</span></div>
-                </div>
+            <div class="card-content">
+              <h3 class="course-title">Mastering AutoCAD 2026</h3>
+              <p class="instructor">Eng. Ahmed Ali, AAST Engineering</p>
+              <div class="rating-section">
+                <div class="rating">4.9 ★★★★★</div>
+                <span class="review-count">(1,240 reviews)</span>
+              </div>
+              <div class="price-section">
+                <span class="price">499.99 EGP</span>
+                <a href="#" class="btn-enroll">Enroll Now</a>
+              </div>
             </div>
+          </div>
 
-            <div class="course-card">
-                <div class="course-img" style="background-image: url("../imgs/excel.webp");"></div>
-                <div class="card-details">
-                    <h3>Advanced Excel for Business</h3>
-                    <p class="instructor">Dr. Nadia Hassan, AAST Management</p>
-                    <div class="rating">4.7 ★★★★☆ <span>(950)</span></div>
-                    <div class="price"><span>399.99EGP</span></div>
-                </div>
+          <div class="course-card">
+            <div class="course-image-wrapper">
+              <div
+                class="course-img-placeholder"
+                style="
+                  background-image: url(&quot;../imgs/data-analysis-1024x576.webp&quot;);
+                "
+              ></div>
             </div>
-
-            <div class="course-card">
-                <div class="course-img" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=300&q=80');"></div>
-                <div class="card-details">
-                    <h3>Maritime Safety & Security</h3>
-                    <p class="instructor">Capt. Sameh Omar, Maritime College</p>
-                    <div class="rating">4.6 ★★★★☆ <span>(420)</span></div>
-                    <div class="price"> <span>120.00EGP</span></div>
-                </div>
+            <div class="card-content">
+              <h3 class="course-title">Python for Data Analysis</h3>
+              <p class="instructor">AAST Computing Center</p>
+              <div class="rating-section">
+                <div class="rating">4.8 ★★★★★</div>
+                <span class="review-count">(3,100 reviews)</span>
+              </div>
+              <div class="price-section">
+                <span class="price">799.99 EGP</span>
+                <a href="#" class="btn-enroll">Enroll Now</a>
+              </div>
             </div>
+          </div>
 
+          <div class="course-card">
+            <div class="course-image-wrapper">
+              <div
+                class="course-img-placeholder"
+                style="background-image: url(&quot;../imgs/excel.webp&quot;)"
+              ></div>
+            </div>
+            <div class="card-content">
+              <h3 class="course-title">Advanced Excel for Business</h3>
+              <p class="instructor">Dr. Nadia Hassan, AAST Management</p>
+              <div class="rating-section">
+                <div class="rating">4.7 ★★★★☆</div>
+                <span class="review-count">(950 reviews)</span>
+              </div>
+              <div class="price-section">
+                <span class="price">399.99 EGP</span>
+                <a href="#" class="btn-enroll">Enroll Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-image-wrapper">
+              <div
+                class="course-img-placeholder"
+                style="
+                  background-image: url(&quot;https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=300&q=80&quot;);
+                "
+              ></div>
+            </div>
+            <div class="card-content">
+              <h3 class="course-title">Maritime Safety & Security</h3>
+              <p class="instructor">Capt. Sameh Omar, Maritime College</p>
+              <div class="rating-section">
+                <div class="rating">4.6 ★★★★☆</div>
+                <span class="review-count">(420 reviews)</span>
+              </div>
+              <div class="price-section">
+                <span class="price">120.00 EGP</span>
+                <a href="#" class="btn-enroll">Enroll Now</a>
+              </div>
+            </div>
+          </div>
         </div>
-    </main>
 
-</body>
+        <div class="view-all-btn">
+          <a href="Courses.html" class="btn btn-large">View All Courses</a>
+        </div>
+      </section>
+    </main>
+  </body>
 </html>
