@@ -1,4 +1,4 @@
-/* General Reset */
+
 * {
     margin: 0;
     padding: 0;
@@ -13,7 +13,6 @@ body {
     color: #1a202c;
 }
 
-/* Sidebar Styling */
 .sidebar {
     width: 260px;
     background-color: #1a2a44;
@@ -61,7 +60,7 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Main Content Area */
+
 .main-body {
     flex: 1;
     padding: 40px;
@@ -81,7 +80,7 @@ body {
     margin-bottom: 8px;
 }
 
-/* Table Card Styling */
+
 .table-container {
     background: white;
     padding: 20px;
