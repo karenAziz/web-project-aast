@@ -1,4 +1,4 @@
-/* Courses Page Specific Styles */
+
 
 .courses-header {
   background: linear-gradient(135deg, #010d1c 0%, #1a3a52 100%);
@@ -101,7 +101,7 @@
   transform: translateY(-2px);
 }
 
-/* Main Courses Layout */
+
 .courses-main {
   max-width: 1400px;
   margin: 0 auto;
@@ -184,7 +184,7 @@
   border-color: #4a90e2;
 }
 
-/* Courses Content */
+
 .courses-content {
   width: 100%;
 }
@@ -221,7 +221,7 @@
   border-color: #4a90e2;
 }
 
-/* Courses Grid */
+
 .courses-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -249,7 +249,7 @@
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
-/* Pagination */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -315,7 +315,7 @@
   color: #ffffff;
 }
 
-/* Responsive Design */
+
 @media (max-width: 1024px) {
   .courses-main {
     grid-template-columns: 1fr;
