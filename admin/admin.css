@@ -1,18 +1,11 @@
-/* =========================================
-   ADMIN DASHBOARD STYLES
-   ========================================= */
-
 body {
   margin: 0;
-  background-color: #f3f4f6; /* Lighter background to make white cards pop */
+  background-color: #f3f4f6;
 }
-
 .admin-container {
   display: flex;
   min-height: 100vh;
 }
-
-/* Sidebar Styling */
 .sidebar {
   width: 260px;
   background: linear-gradient(135deg, #010d1c 0%, #1a2f4e 100%);
@@ -22,7 +15,6 @@ body {
   padding-top: 30px;
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
 }
-
 .sidebar h2 {
   text-align: center;
   color: #ffffff;
@@ -30,7 +22,6 @@ body {
   font-size: 22px;
   letter-spacing: 1px;
 }
-
 .sidebar a {
   color: #9ca3af;
   text-decoration: none;
@@ -40,33 +31,27 @@ body {
   transition: all 0.3s ease;
   border-left: 4px solid transparent;
 }
-
 .sidebar a:hover,
 .sidebar a.active {
   background-color: rgba(74, 144, 226, 0.1);
   color: #4a90e2;
   border-left: 4px solid #4a90e2;
 }
-
 .sidebar .logout-link {
-  margin-top: auto; /* Pushes logout to the bottom */
+  margin-top: auto;
   margin-bottom: 30px;
   color: #ef4444;
 }
-
 .sidebar .logout-link:hover {
   background-color: rgba(239, 68, 68, 0.1);
   color: #f87171;
   border-left: 4px solid #ef4444;
 }
-
-/* Main Content Area */
 .main-content {
   flex: 1;
   padding: 40px;
   overflow-y: auto;
 }
-
 .welcome-card {
   background: white;
   padding: 30px 40px;
@@ -74,27 +59,22 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   margin-bottom: 40px;
 }
-
 .welcome-card h1 {
   color: #010d1c;
   margin-top: 0;
   margin-bottom: 10px;
   font-size: 28px;
 }
-
 .welcome-card p {
   color: #6b7280;
   margin: 0;
   font-size: 16px;
 }
-
-/* Statistics Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 25px;
 }
-
 .stat-card {
   background: linear-gradient(135deg, #010d1c 0%, #1a3a52 100%);
   color: white;
@@ -103,11 +83,9 @@ body {
   box-shadow: 0 10px 25px rgba(26, 58, 82, 0.2);
   transition: transform 0.3s ease;
 }
-
 .stat-card:hover {
   transform: translateY(-5px);
 }
-
 .stat-card h3 {
   color: #93c5fd;
   margin: 0 0 15px 0;
@@ -115,10 +93,143 @@ body {
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-
 .stat-card .number {
   font-size: 42px;
   font-weight: 800;
   margin: 0;
   color: #ffffff;
+}
+
+/* Data Tables */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.admin-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  padding: 16px 20px;
+  font-size: 14px;
+  border-bottom: 2px solid #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.admin-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 15px;
+  vertical-align: middle;
+}
+.admin-table tr:hover td {
+  background-color: #f8fafc;
+}
+.role-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+.role-badge.admin {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+.role-badge.student {
+  background-color: rgba(74, 144, 226, 0.1);
+  color: #4a90e2;
+}
+.role-badge.teacher {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 5px;
+}
+.action-btn.edit {
+  background-color: transparent;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
+}
+.action-btn.edit:hover {
+  background-color: #4a90e2;
+  color: white;
+}
+.action-btn.delete {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+.action-btn.delete:hover {
+  background-color: #ef4444;
+  color: white;
+}
+/* =========================================
+   ADMIN FORM STYLES
+   ========================================= */
+
+/* The white card housing the form */
+.admin-form-card {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 600px; /* Keeps the form from getting too wide */
+  margin-top: 20px;
+}
+
+/* Spacing for each input section */
+.admin-form-group {
+  margin-bottom: 20px;
+}
+
+/* Label styling */
+.admin-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #334155;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Input and Select dropdown styling */
+.admin-form-group input,
+.admin-form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #010d1c;
+  box-sizing: border-box; /* Ensures padding doesn't break width */
+  transition: border-color 0.3s ease;
+}
+
+/* Blue glow effect on focus */
+.admin-form-group input:focus,
+.admin-form-group select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* Specific fix for dropdowns */
+.admin-form-group select {
+  background-color: white;
+  cursor: pointer;
 }
