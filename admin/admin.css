@@ -1,106 +1,124 @@
 /* =========================================
-   ADMIN PANEL STYLES
+   ADMIN DASHBOARD STYLES
    ========================================= */
+
+body {
+  margin: 0;
+  background-color: #f3f4f6; /* Lighter background to make white cards pop */
+}
 
 .admin-container {
   display: flex;
   min-height: 100vh;
-  background-color: rgb(210, 200, 200);
 }
 
+/* Sidebar Styling */
 .sidebar {
-  width: 250px;
-  background-color: #010d1c;
-  padding: 20px 0;
+  width: 260px;
+  background: linear-gradient(135deg, #010d1c 0%, #1a2f4e 100%);
   color: white;
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar h2 {
   text-align: center;
-  color: #4a90e2;
-  margin-bottom: 30px;
+  color: #ffffff;
+  margin-bottom: 40px;
+  font-size: 22px;
+  letter-spacing: 1px;
 }
 
 .sidebar a {
-  display: block;
-  padding: 15px 25px;
-  color: #f1e4e4;
+  color: #9ca3af;
   text-decoration: none;
-  transition: background 0.3s;
+  padding: 16px 30px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
 }
 
-.sidebar a:hover {
-  background-color: #1a2a35;
+.sidebar a:hover,
+.sidebar a.active {
+  background-color: rgba(74, 144, 226, 0.1);
+  color: #4a90e2;
   border-left: 4px solid #4a90e2;
 }
 
+.sidebar .logout-link {
+  margin-top: auto; /* Pushes logout to the bottom */
+  margin-bottom: 30px;
+  color: #ef4444;
+}
+
+.sidebar .logout-link:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border-left: 4px solid #ef4444;
+}
+
+/* Main Content Area */
 .main-content {
   flex: 1;
   padding: 40px;
+  overflow-y: auto;
 }
 
-.welcome-card,
-.table-container {
-  background-color: #010d1c;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  color: white;
+.welcome-card {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 40px;
 }
 
 .welcome-card h1 {
-  color: #4a90e2;
+  color: #010d1c;
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 28px;
 }
 
-/* Admin Tables & Badges */
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+.welcome-card p {
+  color: #6b7280;
+  margin: 0;
+  font-size: 16px;
 }
 
-.admin-table th,
-.admin-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #1a2a35;
+/* Statistics Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
 }
 
-.admin-table th {
-  background-color: #1a2a35;
-  color: #4a90e2;
+.stat-card {
+  background: linear-gradient(135deg, #010d1c 0%, #1a3a52 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(26, 58, 82, 0.2);
+  transition: transform 0.3s ease;
 }
 
-.badge {
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card h3 {
+  color: #93c5fd;
+  margin: 0 0 15px 0;
+  font-size: 14px;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.role-admin {
-  background-color: #dc3545;
-  color: white;
-}
-.role-teacher {
-  background-color: #ffc107;
-  color: black;
-}
-.role-student {
-  background-color: #28a745;
-  color: white;
-}
-
-.delete-btn {
-  padding: 5px 10px;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.delete-btn:hover {
-  background: #c82333;
+.stat-card .number {
+  font-size: 42px;
+  font-weight: 800;
+  margin: 0;
+  color: #ffffff;
 }
