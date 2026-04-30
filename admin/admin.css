@@ -233,3 +233,30 @@ body {
   background-color: white;
   cursor: pointer;
 }
+/* =========================================
+   REPORTS PAGE SPECIFIC STYLES
+   ========================================= */
+
+.report-card {
+  border: 1px solid #e2e8f0;
+}
+
+.report-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Custom width for distribution bars if needed */
+.progress-bar-container {
+  width: 100%;
+  background-color: #f1f5f9;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.progress-fill {
+  height: 10px;
+  background-color: #4a90e2;
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+}

@@ -27,7 +27,8 @@ if ($result = $conn->query($course_query)) {
 }
 
 // Fetch Total Active Enrollments
-$enroll_query = "SELECT COUNT(*) as count FROM enrollments WHERE Status = 'Active'";
+// Fetch Total Enrollments (Counting UserID)
+$enroll_query = "SELECT COUNT(UserID) as count FROM enrollments";
 if ($result = $conn->query($enroll_query)) {
     $total_enrollments = $result->fetch_assoc()['count'];
 }
