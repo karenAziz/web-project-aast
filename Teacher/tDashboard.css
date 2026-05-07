@@ -15,7 +15,7 @@ body {
 /* Sidebar (Consistent with Admin Style) */
 .sidebar {
     width: 260px;
-    background-color: #1a233a;
+    background-color: #1a2a44;
     color: white;
     display: flex;
     flex-direction: column;
