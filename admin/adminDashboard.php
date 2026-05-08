@@ -4,8 +4,33 @@ include '../DB/db_connect.php';
 
 // SECURITY LOCK: Admin Only
 if (!isset($_SESSION['Role']) || $_SESSION['Role'] !== 'admin') {
-    header("Location: ../login.php");
+    // Redirecting to login.html based on our previous setup
+    header("Location: ../login.html");
     exit();
+}
+
+// Initialize variables for our dashboard statistics
+$total_students = 0;
+$total_courses = 0;
+$total_enrollments = 0;
+
+// Fetch Total Students
+$student_query = "SELECT COUNT(*) as count FROM users WHERE Role = 'student'";
+if ($result = $conn->query($student_query)) {
+    $total_students = $result->fetch_assoc()['count'];
+}
+
+// Fetch Total Courses
+$course_query = "SELECT COUNT(*) as count FROM courses";
+if ($result = $conn->query($course_query)) {
+    $total_courses = $result->fetch_assoc()['count'];
+}
+
+// Fetch Total Active Enrollments
+// Fetch Total Enrollments (Counting UserID)
+$enroll_query = "SELECT COUNT(UserID) as count FROM enrollments";
+if ($result = $conn->query($enroll_query)) {
+    $total_enrollments = $result->fetch_assoc()['count'];
 }
 ?>
 <!DOCTYPE html>
@@ -13,28 +38,46 @@ if (!isset($_SESSION['Role']) || $_SESSION['Role'] !== 'admin') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Helpy</title>
+    <title>Admin Dashboard | AASTMT Success Hub</title>
     <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
 
 <div class="admin-container">
-    <div class="sidebar">
-        <h2>Helpy Admin</h2>
-        <a href="adminDashboard.php" style="background-color: #1a2a35; border-left: 4px solid #4a90e2;">Dashboard</a>
+    <nav class="sidebar">
+        <h2>AASTMT Admin</h2>
+        <a href="adminDashboard.php" class="active">Dashboard</a>
         <a href="manageUser.php">Manage Users</a>
         <a href="ManageCourses.php">Manage Courses</a>
         <a href="Reports.php">Reports</a>
         <a href="Settings.php">Settings</a>
-        <a href="../logout.php" style="color: #ff6b6b; margin-top: 50px;">Logout</a>
-    </div>
+        <a href="../logout.php" class="logout-link">Logout</a>
+    </nav>
 
-    <div class="main-content">
+    <main class="main-content">
         <div class="welcome-card">
-            <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['Name']); ?>!</h1>
-            <p>Select an option from the sidebar to manage the Helpy platform.</p>
+            <h1>Welcome back, <?php echo isset($_SESSION['Name']) ? htmlspecialchars($_SESSION['Name']) : 'Admin'; ?>!</h1>
+            <p>Here is an overview of the AASTMT Success Hub platform today.</p>
         </div>
-    </div>
+
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>Total Students</h3>
+                <p class="number"><?php echo $total_students; ?></p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Active Courses</h3>
+                <p class="number"><?php echo $total_courses; ?></p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Total Enrollments</h3>
+                <p class="number"><?php echo $total_enrollments; ?></p>
+            </div>
+        </div>
+    </main>
 </div>
 
 </body>

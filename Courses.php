@@ -14,6 +14,8 @@ $sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
 // Build the query
 $query = "SELECT * FROM courses WHERE 1=1";
 
+// NOTE: If you haven't added 'Category' and 'Level' columns to your database yet,
+// using these filters on the page will cause a database error.
 if ($category && $category !== 'all') {
     $query .= " AND Category = '$category'";
 }
@@ -25,19 +27,22 @@ if ($level && $level !== 'all') {
 // Apply sorting
 switch ($sort) {
     case 'popularity':
-        $query .= " ORDER BY ReviewCount DESC";
+        // Popularity sort will fail until a 'ReviewCount' column is added to the DB
+        $query .= " ORDER BY CourseID DESC"; 
         break;
     case 'price_low':
-        $query .= " ORDER BY Price ASC";
+        // Price sort will fail until a 'Price' column is added to the DB
+        $query .= " ORDER BY CourseID DESC";
         break;
     case 'price_high':
-        $query .= " ORDER BY Price DESC";
+        $query .= " ORDER BY CourseID DESC";
         break;
     case 'rating':
-        $query .= " ORDER BY Rating DESC";
+        // Rating sort will fail until a 'Rating' column is added to the DB
+        $query .= " ORDER BY CourseID DESC";
         break;
     default: // newest
-        $query .= " ORDER BY CreatedAt DESC";
+        $query .= " ORDER BY CourseID DESC"; // FIXED sorting
 }
 
 // Pagination
@@ -211,23 +216,20 @@ $total_pages = ceil($total_courses / $per_page);
                     ?>
                         <div class="course-card">
                             <div class="course-image-wrapper">
-                                <div class="course-img-placeholder" style="background-image: url('<?php echo $course['ImageURL']; ?>'); background-size: cover; background-position: center;"></div>
-                                <?php if ($course['Badge']): ?>
-                                    <div class="badge <?php echo strtolower($course['Badge']); ?>"><?php echo $course['Badge']; ?></div>
-                                <?php endif; ?>
+                                <div class="course-img-placeholder" style="background-color: #1e293b; min-height: 160px;"></div>
                             </div>
                             <div class="card-content">
-                                <h3 class="course-title"><?php echo htmlspecialchars($course['CourseName']); ?></h3>
+                                <h3 class="course-title"><?php echo htmlspecialchars($course['Title']); ?></h3>
                                 <p class="instructor"><?php echo htmlspecialchars($course['Instructor']); ?></p>
-                                <div class="course-meta">
-                                    <span class="level-badge"><?php echo $course['Level']; ?></span>
-                                </div>
-                                <div class="rating-section">
-                                    <div class="rating"><?php echo number_format($course['Rating'], 1); ?> ★★★★★</div>
-                                    <span class="review-count">(<?php echo $course['ReviewCount']; ?> reviews)</span>
-                                </div>
-                                <div class="price-section">
-                                    <span class="price"><?php echo number_format($course['Price'], 2); ?> EGP</span>
+                                
+                                <p class="course-description" style="font-size: 0.9em; color: #94a3b8; margin: 10px 0 15px 0; line-height: 1.4;">
+                                    <?php 
+                                        $desc = htmlspecialchars($course['Description']);
+                                        echo strlen($desc) > 70 ? substr($desc, 0, 70) . '...' : $desc; 
+                                    ?>
+                                </p>
+
+                                <div class="price-section" style="justify-content: flex-end; margin-top: auto;">
                                     <?php if ($is_student): ?>
                                         <?php if ($is_enrolled): ?>
                                             <a href="student/course_detail.php?course_id=<?php echo $course['CourseID']; ?>" class="btn-enroll" style="background-color: #10b981;">Go to Course</a>

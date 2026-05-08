@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AASTMT - Student Management</title>
+    <link rel="stylesheet" href="sProfile.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="logo">AASTMT Admin</div>
+        <ul class="nav-links">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#" class="active">Manage Users</a></li>
+            <li><a href="#">Manage Courses</a></li>
+            <li><a href="#">Reports</a></li>
+            <li><a href="#">Settings</a></li>
+        </ul>
+        <a href="#" class="logout">Logout</a>
+    </nav>
+
+    <main class="main-body">
+        <header class="top-banner">
+            <h1>Student Directory</h1>
+            <p>View and manage all registered students in the system.</p>
+        </header>
+
+        <section class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Full Name</th>
+                        <th>Major</th>
+                        <th>Registration Date</th>
+                    </tr>
+                </thead>
+                <tbody id="student-data">
+                    <tr>
+                        <td colspan="4" class="empty-msg">No students registered yet. Waiting for database input...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+</body>
+</html>
