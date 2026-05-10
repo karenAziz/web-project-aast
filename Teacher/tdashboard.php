@@ -21,7 +21,7 @@ $courses_res = $conn->query("SELECT * FROM courses WHERE Instructor = '$teacher_
     <nav class="sidebar">
         <h2>Teacher Portal</h2>
         <a href="tdashboard.php" class="active">Dashboard</a>
-        <a href="create_course.php">Create Course</a>
+        <a href="createCourse.php">Create Course</a>
         <a href="upload_lessons.php">Upload Lessons</a>
         <a href="../logout.php" style="color: #ff7675; margin-top: auto;">Logout</a>
     </nav>
