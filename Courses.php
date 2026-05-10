@@ -6,43 +6,23 @@ require_once 'DB/db_connect.php';
 $is_logged_in = isset($_SESSION['UserID']);
 $is_student = isset($_SESSION['Role']) && $_SESSION['Role'] === 'student';
 
-// Get filter parameters
-$category = isset($_GET['category']) ? $conn->real_escape_string($_GET['category']) : '';
-$level = isset($_GET['level']) ? $conn->real_escape_string($_GET['level']) : '';
+// Get filter parameters (Kept for UI purposes, but disconnected from SQL to prevent crashes)
+$category = isset($_GET['category']) ? $conn->real_escape_string($_GET['category']) : 'all';
+$level = isset($_GET['level']) ? $conn->real_escape_string($_GET['level']) : 'all';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
 
-// Build the query
-$query = "SELECT * FROM courses WHERE 1=1";
+// Build the query (Only selecting columns that actually exist in your database)
+$query = "SELECT CourseID, Title, Instructor, Description FROM courses";
 
-// NOTE: If you haven't added 'Category' and 'Level' columns to your database yet,
-// using these filters on the page will cause a database error.
-if ($category && $category !== 'all') {
-    $query .= " AND Category = '$category'";
-}
-
-if ($level && $level !== 'all') {
-    $query .= " AND Level = '$level'";
-}
-
-// Apply sorting
+// Apply basic sorting that won't crash
 switch ($sort) {
     case 'popularity':
-        // Popularity sort will fail until a 'ReviewCount' column is added to the DB
-        $query .= " ORDER BY CourseID DESC"; 
-        break;
-    case 'price_low':
-        // Price sort will fail until a 'Price' column is added to the DB
-        $query .= " ORDER BY CourseID DESC";
-        break;
-    case 'price_high':
-        $query .= " ORDER BY CourseID DESC";
-        break;
     case 'rating':
-        // Rating sort will fail until a 'Rating' column is added to the DB
-        $query .= " ORDER BY CourseID DESC";
+    case 'price_low':
+    case 'price_high':
+    default: 
+        $query .= " ORDER BY CourseID DESC"; // Defaults to newest until you add more columns
         break;
-    default: // newest
-        $query .= " ORDER BY CourseID DESC"; // FIXED sorting
 }
 
 // Pagination
@@ -61,11 +41,12 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
-// Get enrolled course IDs for current user
+// Get enrolled course IDs for current user to change button state
 $enrolled_courses = [];
 if ($is_student) {
     $user_id = $_SESSION['UserID'];
-    $enrollment_query = "SELECT CourseID FROM enrollments WHERE UserID = $user_id AND Status = 'Active'";
+    // Using the fixed query that doesn't look for EnrollmentID
+    $enrollment_query = "SELECT CourseID FROM enrollments WHERE UserID = $user_id";
     $enrollment_result = $conn->query($enrollment_query);
     
     if ($enrollment_result && $enrollment_result->num_rows > 0) {
@@ -76,13 +57,7 @@ if ($is_student) {
 }
 
 // Get total courses count for pagination
-$count_query = "SELECT COUNT(*) as total FROM courses WHERE 1=1";
-if ($category && $category !== 'all') {
-    $count_query .= " AND Category = '$category'";
-}
-if ($level && $level !== 'all') {
-    $count_query .= " AND Level = '$level'";
-}
+$count_query = "SELECT COUNT(*) as total FROM courses";
 $count_result = $conn->query($count_query);
 $count_row = $count_result->fetch_assoc();
 $total_courses = $count_row['total'];
@@ -106,13 +81,15 @@ $total_pages = ceil($total_courses / $per_page);
                 <span class="logo-subtitle">Success Hub</span>
             </div>
             <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.php" class="nav-link">Home</a></li>
                 <li><a href="aboutus.html" class="nav-link">About Us</a></li>
                 <li><a href="Courses.php" class="nav-link active">Courses</a></li>
                 <?php if ($is_logged_in): ?>
                     <?php if ($is_student): ?>
                         <li><a href="student/sdashboard.php" class="nav-link">Dashboard</a></li>
                         <li><a href="student/my_courses.php" class="nav-link">My Courses</a></li>
+                    <?php else: ?>
+                        <li><a href="admin/adminDashboard.php" class="nav-link">Dashboard</a></li>
                     <?php endif; ?>
                     <li><a href="logout.php" class="nav-link btn-login">Logout</a></li>
                 <?php else: ?>
@@ -138,10 +115,10 @@ $total_pages = ceil($total_courses / $per_page);
         <aside class="filters-sidebar">
             <form method="GET" id="filterForm">
                 <div class="filter-section">
-                    <h3 class="filter-title">Category</h3>
+                    <h3 class="filter-title">Category (Demo)</h3>
                     <div class="filter-options">
                         <label class="filter-label">
-                            <input type="radio" name="category" value="all" <?php echo (!$category || $category === 'all') ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
+                            <input type="radio" name="category" value="all" <?php echo ($category === 'all') ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
                             All Categories
                         </label>
                         <label class="filter-label">
@@ -156,27 +133,19 @@ $total_pages = ceil($total_courses / $per_page);
                             <input type="radio" name="category" value="Technology" <?php echo $category === 'Technology' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
                             Technology
                         </label>
-                        <label class="filter-label">
-                            <input type="radio" name="category" value="Maritime" <?php echo $category === 'Maritime' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            Maritime
-                        </label>
                     </div>
                 </div>
 
                 <div class="filter-section">
-                    <h3 class="filter-title">Level</h3>
+                    <h3 class="filter-title">Level (Demo)</h3>
                     <div class="filter-options">
                         <label class="filter-label">
-                            <input type="radio" name="level" value="all" <?php echo (!$level || $level === 'all') ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
+                            <input type="radio" name="level" value="all" <?php echo ($level === 'all') ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
                             All Levels
                         </label>
                         <label class="filter-label">
                             <input type="radio" name="level" value="Beginner" <?php echo $level === 'Beginner' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
                             Beginner
-                        </label>
-                        <label class="filter-label">
-                            <input type="radio" name="level" value="Intermediate" <?php echo $level === 'Intermediate' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            Intermediate
                         </label>
                         <label class="filter-label">
                             <input type="radio" name="level" value="Advanced" <?php echo $level === 'Advanced' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
@@ -197,15 +166,7 @@ $total_pages = ceil($total_courses / $per_page);
                         <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Sort by: Newest</option>
                         <option value="popularity" <?php echo $sort === 'popularity' ? 'selected' : ''; ?>>Popularity</option>
                         <option value="price_low" <?php echo $sort === 'price_low' ? 'selected' : ''; ?>>Price: Low to High</option>
-                        <option value="price_high" <?php echo $sort === 'price_high' ? 'selected' : ''; ?>>Price: High to Low</option>
-                        <option value="rating" <?php echo $sort === 'rating' ? 'selected' : ''; ?>>Rating</option>
                     </select>
-                    <?php if ($category && $category !== 'all'): ?>
-                        <input type="hidden" name="category" value="<?php echo htmlspecialchars($category); ?>">
-                    <?php endif; ?>
-                    <?php if ($level && $level !== 'all'): ?>
-                        <input type="hidden" name="level" value="<?php echo htmlspecialchars($level); ?>">
-                    <?php endif; ?>
                 </form>
             </div>
 
@@ -216,7 +177,9 @@ $total_pages = ceil($total_courses / $per_page);
                     ?>
                         <div class="course-card">
                             <div class="course-image-wrapper">
-                                <div class="course-img-placeholder" style="background-color: #1e293b; min-height: 160px;"></div>
+                                <div class="course-img-placeholder" style="background-color: #1e293b; min-height: 160px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
+                                    <?php echo substr(htmlspecialchars($course['Title']), 0, 1); ?>
+                                </div>
                             </div>
                             <div class="card-content">
                                 <h3 class="course-title"><?php echo htmlspecialchars($course['Title']); ?></h3>
@@ -234,10 +197,7 @@ $total_pages = ceil($total_courses / $per_page);
                                         <?php if ($is_enrolled): ?>
                                             <a href="student/course_detail.php?course_id=<?php echo $course['CourseID']; ?>" class="btn-enroll" style="background-color: #10b981;">Go to Course</a>
                                         <?php else: ?>
-                                            <form method="POST" action="enroll.php" style="display: inline;">
-                                                <input type="hidden" name="course_id" value="<?php echo $course['CourseID']; ?>">
-                                                <button type="submit" class="btn-enroll">Enroll Now</button>
-                                            </form>
+                                            <a href="student/checkout.php?course_id=<?php echo $course['CourseID']; ?>" class="btn-enroll">Enroll Now</a>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         <a href="login.html" class="btn-enroll">Login to Enroll</a>
@@ -254,19 +214,19 @@ $total_pages = ceil($total_courses / $per_page);
             <?php if ($total_pages > 1): ?>
                 <div class="pagination">
                     <?php if ($page > 1): ?>
-                        <a href="Courses.php?page=<?php echo $page - 1; ?>&category=<?php echo $category; ?>&level=<?php echo $level; ?>&sort=<?php echo $sort; ?>" class="pagination-btn">← Previous</a>
+                        <a href="Courses.php?page=<?php echo $page - 1; ?>&sort=<?php echo $sort; ?>" class="pagination-btn">← Previous</a>
                     <?php endif; ?>
                     
                     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                         <?php if ($i == $page): ?>
                             <button class="pagination-btn active"><?php echo $i; ?></button>
                         <?php else: ?>
-                            <a href="Courses.php?page=<?php echo $i; ?>&category=<?php echo $category; ?>&level=<?php echo $level; ?>&sort=<?php echo $sort; ?>" class="pagination-btn"><?php echo $i; ?></a>
+                            <a href="Courses.php?page=<?php echo $i; ?>&sort=<?php echo $sort; ?>" class="pagination-btn"><?php echo $i; ?></a>
                         <?php endif; ?>
                     <?php endfor; ?>
                     
                     <?php if ($page < $total_pages): ?>
-                        <a href="Courses.php?page=<?php echo $page + 1; ?>&category=<?php echo $category; ?>&level=<?php echo $level; ?>&sort=<?php echo $sort; ?>" class="pagination-btn">Next →</a>
+                        <a href="Courses.php?page=<?php echo $page + 1; ?>&sort=<?php echo $sort; ?>" class="pagination-btn">Next →</a>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>

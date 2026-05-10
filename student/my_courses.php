@@ -10,23 +10,15 @@ if (!isset($_SESSION['Role']) || $_SESSION['Role'] !== 'student') {
 
 $user_id = $_SESSION['UserID'];
 
-// Get enrolled courses
+// FIXED: Removed e.Progress from the SELECT statement
 $query = "SELECT 
     c.CourseID,
-    c.CourseName,
+    c.Title,
     c.Instructor,
-    c.Price,
-    c.Rating,
-    c.Level,
-    c.Category,
-    c.ImageURL,
-    e.Progress,
-    e.Status,
-    e.EnrollmentDate
+    c.Description
 FROM enrollments e
 JOIN courses c ON e.CourseID = c.CourseID
-WHERE e.UserID = $user_id
-ORDER BY e.EnrollmentDate DESC";
+WHERE e.UserID = $user_id";
 
 $result = $conn->query($query);
 $courses = [];
@@ -135,6 +127,53 @@ if ($result && $result->num_rows > 0) {
         .empty-state .btn-primary {
             display: inline-block;
         }
+
+        /* --- New Footer Styling --- */
+        .footer {
+            background-color: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 24px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .footer p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #4a90e2;
+        }
     </style>
 </head>
 <body>
@@ -148,6 +187,8 @@ if ($result && $result->num_rows > 0) {
                 <li><a href="../index.html" class="nav-link">Home</a></li>
                 <li><a href="../aboutus.html" class="nav-link">About Us</a></li>
                 <li><a href="../Courses.php" class="nav-link">Browse Courses</a></li>
+                <li><a href="my_courses.php" class="nav-link active">My Courses</a></li>
+                <li><a href="Assessment.php" class="nav-link">Assessments</a></li>
                 <li><a href="sdashboard.php" class="nav-link">Dashboard</a></li>
                 <li><a href="../logout.php" class="nav-link btn-login">Logout</a></li>
             </ul>
@@ -174,22 +215,22 @@ if ($result && $result->num_rows > 0) {
                     <?php foreach ($courses as $course): ?>
                         <div class="course-card">
                             <div class="course-image-wrapper">
-                                <div class="course-img-placeholder" style="background-image: url('<?php echo $course['ImageURL']; ?>'); background-size: cover; background-position: center;"></div>
+                                <div class="course-img-placeholder" style="background-image: url('<?php echo htmlspecialchars($course['ImageURL'] ?? ''); ?>'); background-size: cover; background-position: center;"></div>
                                 <div class="badge" style="background-color: #4a90e2;">In Progress</div>
                             </div>
                             <div class="card-content">
-                                <h3 class="course-title"><?php echo htmlspecialchars($course['CourseName']); ?></h3>
+                                <h3 class="course-title"><?php echo htmlspecialchars($course['Title']); ?></h3>
                                 <p class="instructor"><?php echo htmlspecialchars($course['Instructor']); ?></p>
                                 
                                 <div class="progress-bar">
-                                    <div class="progress-fill" style="width: <?php echo $course['Progress']; ?>%;"></div>
+                                    <div class="progress-fill" style="width: 0%;"></div>
                                 </div>
                                 <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">
-                                    <?php echo $course['Progress']; ?>% Complete
+                                    Just Started
                                 </p>
 
                                 <div class="rating-section" style="margin-top: 12px;">
-                                    <div class="rating"><?php echo number_format($course['Rating'], 1); ?> ★★★★★</div>
+                                    <div class="rating"><?php echo number_format($course['Rating'] ?? 0, 1); ?> ★★★★★</div>
                                 </div>
 
                                 <div class="course-actions">

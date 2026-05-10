@@ -8,8 +8,9 @@ if (!isset($_SESSION['Role']) || $_SESSION['Role'] !== 'admin') {
 }
 
 // 1. Top 5 Most Popular Courses
+// Fixed: Counting UserID instead of the non-existent EnrollmentID
 $popular_courses_query = "
-    SELECT c.Title, COUNT(e.EnrollmentID) as student_count 
+    SELECT c.Title, COUNT(e.UserID) as student_count 
     FROM courses c
     LEFT JOIN enrollments e ON c.CourseID = e.CourseID
     GROUP BY c.CourseID
@@ -21,13 +22,13 @@ $popular_result = $conn->query($popular_courses_query);
 $role_dist_query = "SELECT Role, COUNT(*) as count FROM users GROUP BY Role";
 $role_result = $conn->query($role_dist_query);
 
-// 3. Recent Enrollment Log (Using your new EnrollmentDate)
+// 3. Recent Enrollments
+// Fixed: Removed e.EnrollmentID from the SELECT clause
 $recent_enroll_query = "
-    SELECT u.Name as student_name, c.Title as course_name, e.EnrollmentDate, e.Status
+    SELECT u.Name as student_name, c.Title as course_name
     FROM enrollments e
     JOIN users u ON e.UserID = u.UserID
     JOIN courses c ON e.CourseID = c.CourseID
-    ORDER BY e.EnrollmentDate DESC
     LIMIT 10";
 $recent_result = $conn->query($recent_enroll_query);
 ?>
@@ -78,7 +79,6 @@ $recent_result = $conn->query($recent_enroll_query);
                     <tr>
                         <th>Student</th>
                         <th>Course</th>
-                        <th>Date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -87,8 +87,7 @@ $recent_result = $conn->query($recent_enroll_query);
                         <tr>
                             <td><?php echo htmlspecialchars($row['student_name']); ?></td>
                             <td><?php echo htmlspecialchars($row['course_name']); ?></td>
-                            <td><?php echo date('M d, Y', strtotime($row['EnrollmentDate'])); ?></td>
-                            <td><span class="role-badge student"><?php echo htmlspecialchars($row['Status']); ?></span></td>
+                            <td><strong>Enrolled</strong></td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>

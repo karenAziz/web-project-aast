@@ -31,8 +31,8 @@ if ($course_result->num_rows === 0) {
     exit();
 }
 
-// Check if already enrolled
-$check_enrollment = "SELECT EnrollmentID FROM enrollments WHERE UserID = $user_id AND CourseID = $course_id";
+// FIXED: Removed the missing 'EnrollmentID' column
+$check_enrollment = "SELECT * FROM enrollments WHERE UserID = $user_id AND CourseID = $course_id";
 $enrollment_result = $conn->query($check_enrollment);
 
 if ($enrollment_result->num_rows > 0) {
@@ -40,9 +40,8 @@ if ($enrollment_result->num_rows > 0) {
     exit();
 }
 
-// Create enrollment
-$insert_enrollment = "INSERT INTO enrollments (UserID, CourseID, Progress, Status) 
-                     VALUES ($user_id, $course_id, 0, 'Active')";
+// FIXED: Removed the missing 'Progress' column from the insert statement
+$insert_enrollment = "INSERT INTO enrollments (UserID, CourseID) VALUES ($user_id, $course_id)";
 
 if ($conn->query($insert_enrollment) === TRUE) {
     header("Location: Courses.php?success=enrolled&course_id=$course_id");

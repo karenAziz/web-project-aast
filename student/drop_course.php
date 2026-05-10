@@ -28,10 +28,10 @@ if ($result->num_rows === 0) {
 $row = $result->fetch_assoc();
 $enrollment_id = $row['EnrollmentID'];
 
-// Update enrollment status to Dropped
-$update = "UPDATE enrollments SET Status = 'Dropped' WHERE EnrollmentID = $enrollment_id";
+// Delete enrollment (drop course)
+$delete = "DELETE FROM enrollments WHERE EnrollmentID = $enrollment_id";
 
-if ($conn->query($update) === TRUE) {
+if ($conn->query($delete) === TRUE) {
     header("Location: my_courses.php?success=dropped");
     exit();
 } else {

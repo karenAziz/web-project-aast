@@ -1,5 +1,9 @@
 <?php
 session_start();
+echo "<div style='background: red; color: white; padding: 10px; z-index: 9999; position: relative;'>";
+echo "Current Session Role: " . ($_SESSION['Role'] ?? 'NONE') . "<br>";
+echo "Current Session UserID: " . ($_SESSION['UserID'] ?? 'NONE');
+echo "</div>";
 require_once '../DB/db_connect.php'; 
 
 // SECURITY LOCK: Student Only
@@ -12,21 +16,18 @@ $user_id = $_SESSION['UserID'];
 
 // Get dashboard stats
 $stats_query = "SELECT 
-    COUNT(*) as total_enrolled,
-    SUM(CASE WHEN Status = 'Completed' THEN 1 ELSE 0 END) as completed_courses,
-    AVG(Progress) as avg_progress
-FROM enrollments 
-WHERE UserID = $user_id AND Status IN ('Active', 'Completed')";
+    COUNT(*) as total_enrolled
+FROM enrollments e
+WHERE e.UserID = $user_id";
 
 $stats_result = $conn->query($stats_query);
 $stats = $stats_result->fetch_assoc();
 
 // Get recent courses
-$recent_query = "SELECT c.*, e.Progress, e.Status, e.EnrollmentDate
+$recent_query = "SELECT c.*
 FROM enrollments e
 JOIN courses c ON e.CourseID = c.CourseID
-WHERE e.UserID = $user_id AND e.Status = 'Active'
-ORDER BY e.EnrollmentDate DESC
+WHERE e.UserID = $user_id
 LIMIT 3";
 
 $recent_result = $conn->query($recent_query);
@@ -238,6 +239,53 @@ if ($recent_result && $recent_result->num_rows > 0) {
             color: #6b7280;
             margin-bottom: 20px;
         }
+
+        /* --- New Footer Styling --- */
+        .footer {
+            background-color: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 24px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .footer p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #4a90e2;
+        }
     </style>
 </head>
 <body>
@@ -251,6 +299,7 @@ if ($recent_result && $recent_result->num_rows > 0) {
                 <li><a href="../index.html" class="nav-link">Home</a></li>
                 <li><a href="../Courses.php" class="nav-link">Browse Courses</a></li>
                 <li><a href="my_courses.php" class="nav-link">My Courses</a></li>
+                <li><a href="Assessment.php" class="nav-link">Assessments</a></li>
                 <li><a href="sdashboard.php" class="nav-link active">Dashboard</a></li>
                 <li><a href="../logout.php" class="nav-link btn-login">Logout</a></li>
             </ul>
@@ -259,27 +308,25 @@ if ($recent_result && $recent_result->num_rows > 0) {
 
     <div class="dashboard-container">
         <div class="dashboard-header">
-            <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['Name']); ?>! 👋</h1>
+            <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['Name'] ?? 'Student'); ?>! 👋</h1>
             <p>Here's your learning progress and recommendations</p>
         </div>
 
-        <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number"><?php echo $stats['total_enrolled'] ?? 0; ?></div>
                 <div class="stat-label">Courses Enrolled</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number"><?php echo $stats['completed_courses'] ?? 0; ?></div>
+                <div class="stat-number">N/A</div>
                 <div class="stat-label">Completed</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number"><?php echo round($stats['avg_progress'] ?? 0); ?>%</div>
+                <div class="stat-number">N/A</div>
                 <div class="stat-label">Average Progress</div>
             </div>
         </div>
 
-        <!-- Recently Enrolled Courses -->
         <div>
             <div class="section-title">
                 Your Learning Journey
@@ -296,15 +343,15 @@ if ($recent_result && $recent_result->num_rows > 0) {
                 <div class="courses-preview">
                     <?php foreach ($recent_courses as $course): ?>
                         <div class="course-preview-card">
-                            <div class="course-preview-image" style="background-image: url('<?php echo $course['ImageURL']; ?>');"></div>
+                            <div class="course-preview-image" style="background-image: url('<?php echo htmlspecialchars($course['ImageURL'] ?? ''); ?>');"></div>
                             <div class="course-preview-content">
-                                <div class="course-preview-title"><?php echo htmlspecialchars($course['CourseName']); ?></div>
+                                <div class="course-preview-title"><?php echo htmlspecialchars($course['Title']); ?></div>
                                 <div class="course-preview-instructor"><?php echo htmlspecialchars($course['Instructor']); ?></div>
                                 
                                 <div class="progress-bar">
-                                    <div class="progress-fill" style="width: <?php echo $course['Progress']; ?>%;"></div>
+                                    <div class="progress-fill" style="width: 0%;"></div>
                                 </div>
-                                <div class="progress-text"><?php echo $course['Progress']; ?>% Complete</div>
+                                <div class="progress-text">Just Started</div>
 
                                 <div class="action-buttons">
                                     <a href="course_detail.php?course_id=<?php echo $course['CourseID']; ?>" class="btn btn-primary">Continue</a>
