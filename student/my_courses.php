@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../DB/db_connect.php';
+require_once '../DB/db_connect.php'; // Database connection
 
 // SECURITY LOCK: Student Only
 if (!isset($_SESSION['Role']) || $_SESSION['Role'] !== 'student') {
@@ -10,253 +10,101 @@ if (!isset($_SESSION['Role']) || $_SESSION['Role'] !== 'student') {
 
 $user_id = $_SESSION['UserID'];
 
-// FIXED: Removed e.Progress from the SELECT statement
-$query = "SELECT 
-    c.CourseID,
-    c.Title,
-    c.Instructor,
-    c.Description
-FROM enrollments e
-JOIN courses c ON e.CourseID = c.CourseID
-WHERE e.UserID = $user_id";
+// Fetch all courses this student is currently enrolled in
+// Joining the 'enrollments' table with the 'courses' table
+$sql = "SELECT c.CourseID, c.Title, c.Instructor, c.Level, c.Price 
+        FROM enrollments e 
+        JOIN courses c ON e.CourseID = c.CourseID 
+        WHERE e.UserID = ?";
 
-$result = $conn->query($query);
-$courses = [];
-
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $courses[] = $row;
-    }
-}
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Courses - AAST Extra Learning</title>
+    <title>My Courses | Success Hub</title>
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../Teacher/courses-page.css">
-    <style>
-        .my-courses-header {
-            background: linear-gradient(135deg, #010d1c 0%, #1a3a52 100%);
-            padding: 40px 20px;
-            color: white;
-        }
-
-        .my-courses-header h1 {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background-color: #e5e7eb;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 12px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4a90e2 0%, #357abd 100%);
-            transition: width 0.3s ease;
-        }
-
-        .course-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .btn-continue {
-            flex: 1;
-            padding: 8px 12px;
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            text-decoration: none;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .btn-continue:hover {
-            background-color: #357abd;
-        }
-
-        .btn-drop {
-            flex: 1;
-            padding: 8px 12px;
-            background-color: #f3f4f6;
-            color: #ef4444;
-            border: 1px solid #ef4444;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-drop:hover {
-            background-color: #fef2f2;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6b7280;
-        }
-
-        .empty-state h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #010d1c;
-        }
-
-        .empty-state p {
-            margin-bottom: 20px;
-        }
-
-        .empty-state .btn-primary {
-            display: inline-block;
-        }
-
-        /* --- New Footer Styling --- */
-        .footer {
-            background-color: white;
-            border-top: 1px solid #e5e7eb;
-            padding: 24px 20px;
-            margin-top: 60px;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-
-        @media (min-width: 768px) {
-            .footer-content {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-        }
-
-        .footer p {
-            color: #6b7280;
-            font-size: 14px;
-            margin: 0;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 24px;
-        }
-
-        .footer-links a {
-            color: #6b7280;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        .footer-links a:hover {
-            color: #4a90e2;
-        }
+    <link rel="stylesheet" href="../Teacher/tDashboard.css"> <style>
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; font-size: 14px; }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-error { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        .btn-view { background: #4a90e2; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 12px; }
+        .btn-drop { background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 12px; font-weight: 700; text-decoration: underline; }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <h1 class="logo-text">AASTMT</h1>
-                <span class="logo-subtitle">Success Hub</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="../index.html" class="nav-link">Home</a></li>
-                <li><a href="../aboutus.html" class="nav-link">About Us</a></li>
-                <li><a href="../Courses.php" class="nav-link">Browse Courses</a></li>
-                <li><a href="my_courses.php" class="nav-link active">My Courses</a></li>
-                <li><a href="Assessment.php" class="nav-link">Assessments</a></li>
-                <li><a href="sdashboard.php" class="nav-link">Dashboard</a></li>
-                <li><a href="../logout.php" class="nav-link btn-login">Logout</a></li>
-            </ul>
+
+    <aside class="sidebar">
+        <h2 style="color: white; padding: 20px;">Student Portal</h2>
+        <a href="sdashboard.php">Dashboard</a>
+        <a href="../Courses.php">Browse Courses</a>
+        <a href="my_courses.php" class="active">My Courses</a>
+        <a href="../logout.php" style="margin-top: auto; color: #ff6b6b; padding: 20px;">Logout</a>
+    </aside>
+
+    <main class="content">
+        <div class="page-header">
+            <h1>My Enrolled Courses</h1>
+            <p>Access your learning materials and track your progress.</p>
         </div>
-    </nav>
 
-    <div class="my-courses-header">
-        <div style="max-width: 1200px; margin: 0 auto;">
-            <h1>My Courses</h1>
-            <p>Continue learning from where you left off</p>
-        </div>
-    </div>
+        <?php if(isset($_GET['success']) && $_GET['success'] == 'dropped'): ?>
+            <div class="alert alert-success">Successfully dropped from the course.</div>
+        <?php endif; ?>
 
-    <main class="container">
-        <?php if (empty($courses)): ?>
-            <div class="empty-state">
-                <h2>No Courses Yet</h2>
-                <p>You haven't enrolled in any courses yet. Start learning today!</p>
-                <a href="../Courses.php" class="btn btn-primary">Explore Courses</a>
-            </div>
-        <?php else: ?>
-            <section class="courses-section">
-                <div class="courses-grid">
-                    <?php foreach ($courses as $course): ?>
-                        <div class="course-card">
-                            <div class="course-image-wrapper">
-                                <div class="course-img-placeholder" style="background-image: url('<?php echo htmlspecialchars($course['ImageURL'] ?? ''); ?>'); background-size: cover; background-position: center;"></div>
-                                <div class="badge" style="background-color: #4a90e2;">In Progress</div>
-                            </div>
-                            <div class="card-content">
-                                <h3 class="course-title"><?php echo htmlspecialchars($course['Title']); ?></h3>
-                                <p class="instructor"><?php echo htmlspecialchars($course['Instructor']); ?></p>
-                                
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%;"></div>
-                                </div>
-                                <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">
-                                    Just Started
-                                </p>
+        <?php if(isset($_GET['error'])): ?>
+            <div class="alert alert-error">Operation failed. Please try again later.</div>
+        <?php endif; ?>
 
-                                <div class="rating-section" style="margin-top: 12px;">
-                                    <div class="rating"><?php echo number_format($course['Rating'] ?? 0, 1); ?> ★★★★★</div>
-                                </div>
-
-                                <div class="course-actions">
-                                    <a href="course_detail.php?course_id=<?php echo $course['CourseID']; ?>" class="btn-continue">Continue Learning</a>
-                                    <form method="POST" action="drop_course.php" style="flex: 1;">
-                                        <input type="hidden" name="course_id" value="<?php echo $course['CourseID']; ?>">
-                                        <button type="submit" class="btn-drop" onclick="return confirm('Are you sure you want to drop this course?');">Drop Course</button>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">COURSE NAME</th>
+                        <th>INSTRUCTOR</th>
+                        <th>LEVEL</th>
+                        <th style="text-align: right;">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($result->num_rows > 0): ?>
+                        <?php while($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td>
+                                <div style="font-weight: 700; color: #1a233a;"><?php echo htmlspecialchars($row['Title']); ?></div>
+                                <div style="font-size: 11px; color: #64748b;"><?php echo number_format($row['Price'], 2); ?> L.E.</div>
+                            </td>
+                            <td><?php echo htmlspecialchars($row['Instructor']); ?></td>
+                            <td><span class="status-badge live" style="background: #e0f2fe; color: #0369a1;"><?php echo htmlspecialchars($row['Level']); ?></span></td>
+                            <td style="text-align: right;">
+                                <div style="display: flex; gap: 15px; justify-content: flex-end; align-items: center;">
+                                    <a href="course_detail.php?course_id=<?php echo $row['CourseID']; ?>" class="btn-view">View Lessons</a>
+                                    
+                                    <form action="drop_course.php" method="POST" onsubmit="return confirm('Are you sure you want to drop this course? No refund will be issued.');">
+                                        <input type="hidden" name="course_id" value="<?php echo $row['CourseID']; ?>">
+                                        <button type="submit" class="btn-drop">Drop</button>
                                     </form>
                                 </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-        <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 50px; color: #94a3b8;">
+                                You are not enrolled in any courses yet.<br>
+                                <a href="../Courses.php" style="color: #4a90e2; text-decoration: none; font-weight: 600;">Browse courses here →</a>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </main>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2026 AASTMT Success Hub. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Contact Us</a>
-            </div>
-        </div>
-    </footer>
 </body>
 </html>

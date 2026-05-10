@@ -1,256 +1,160 @@
 <?php
 session_start();
-require_once 'DB/db_connect.php';
+require_once 'DB/db_connect.php'; // Ensures connection to aast_web
 
-// Check if user is logged in
+// 1. Authentication Check
 $is_logged_in = isset($_SESSION['UserID']);
 $is_student = isset($_SESSION['Role']) && $_SESSION['Role'] === 'student';
 
-// Get filter parameters (Kept for UI purposes, but disconnected from SQL to prevent crashes)
+// 2. Filter and Search Parameters
 $category = isset($_GET['category']) ? $conn->real_escape_string($_GET['category']) : 'all';
-$level = isset($_GET['level']) ? $conn->real_escape_string($_GET['level']) : 'all';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
+$search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
 
-// Build the query (Only selecting columns that actually exist in your database)
-$query = "SELECT CourseID, Title, Instructor, Description FROM courses";
+// 3. Build Dynamic SQL Query
+$query = "SELECT CourseID, Title, Instructor, Description, Price, Level, Category FROM courses WHERE 1=1";
 
-// Apply basic sorting that won't crash
-switch ($sort) {
-    case 'popularity':
-    case 'rating':
-    case 'price_low':
-    case 'price_high':
-    default: 
-        $query .= " ORDER BY CourseID DESC"; // Defaults to newest until you add more columns
-        break;
+// Apply Search Filter
+if (!empty($search)) {
+    $query .= " AND (Title LIKE '%$search%' OR Description LIKE '%$search%' OR Instructor LIKE '%$search%')";
 }
 
-// Pagination
+// Apply Category Filter
+if ($category !== 'all') {
+    $query .= " AND Category = '$category'";
+}
+
+// 4. Pagination Setup
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-$per_page = 12;
+$per_page = 9; // Changed to 9 for a cleaner 3x3 grid
 $offset = ($page - 1) * $per_page;
+
+// Count total for pagination
+$total_res = $conn->query(str_replace("CourseID, Title, Instructor, Description, Price, Level, Category", "COUNT(*)", $query));
+$total_rows = $total_res->fetch_row()[0];
+$total_pages = ceil($total_rows / $per_page);
+
+// 5. Apply Sorting and Limits
+if ($sort === 'price_low') {
+    $query .= " ORDER BY Price ASC";
+} elseif ($sort === 'price_high') {
+    $query .= " ORDER BY Price DESC";
+} else {
+    $query .= " ORDER BY CourseID DESC";
+}
 
 $query .= " LIMIT $per_page OFFSET $offset";
 
 $result = $conn->query($query);
 $courses = [];
-
 if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $courses[] = $row;
-    }
+    while ($row = $result->fetch_assoc()) { $courses[] = $row; }
 }
 
-// Get enrolled course IDs for current user to change button state
+// 6. Check Enrollments for current student
 $enrolled_courses = [];
 if ($is_student) {
     $user_id = $_SESSION['UserID'];
-    // Using the fixed query that doesn't look for EnrollmentID
-    $enrollment_query = "SELECT CourseID FROM enrollments WHERE UserID = $user_id";
-    $enrollment_result = $conn->query($enrollment_query);
-    
-    if ($enrollment_result && $enrollment_result->num_rows > 0) {
-        while ($row = $enrollment_result->fetch_assoc()) {
-            $enrolled_courses[] = $row['CourseID'];
-        }
-    }
+    $enroll_res = $conn->query("SELECT CourseID FROM enrollments WHERE UserID = $user_id");
+    while ($row = $enroll_res->fetch_assoc()) { $enrolled_courses[] = $row['CourseID']; }
 }
-
-// Get total courses count for pagination
-$count_query = "SELECT COUNT(*) as total FROM courses";
-$count_result = $conn->query($count_query);
-$count_row = $count_result->fetch_assoc();
-$total_courses = $count_row['total'];
-$total_pages = ceil($total_courses / $per_page);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Courses | AAST Extra Learning</title>
+    <title>Explore Courses | Success Hub</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="Teacher/courses-page.css">
+    <style>
+        .search-bar-container { background: #010d1c; padding: 20px; text-align: center; margin-bottom: 30px; }
+        .search-input { padding: 12px; width: 300px; border-radius: 6px; border: none; }
+        .filter-btn { padding: 10px 20px; background: #1e293b; color: white; border-radius: 20px; text-decoration: none; font-size: 13px; margin: 0 5px; }
+        .filter-btn.active { background: #4a90e2; }
+        .pagination { display: flex; justify-content: center; gap: 10px; margin: 40px 0; }
+        .page-link { padding: 10px 15px; background: white; border: 1px solid #ddd; text-decoration: none; color: #1e293b; border-radius: 4px; }
+        .page-link.active { background: #4a90e2; color: white; border-color: #4a90e2; }
+    </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
-                <h1 class="logo-text">AASTMT</h1>
-                <span class="logo-subtitle">Success Hub</span>
-            </div>
+            <div class="logo"><h1 class="logo-text">AASTMT</h1><span class="logo-subtitle">Success Hub</span></div>
             <ul class="nav-links">
-                <li><a href="index.php" class="nav-link">Home</a></li>
-                <li><a href="aboutus.html" class="nav-link">About Us</a></li>
+                <li><a href="index.html" class="nav-link">Home</a></li>
                 <li><a href="Courses.php" class="nav-link active">Courses</a></li>
                 <?php if ($is_logged_in): ?>
-                    <?php if ($is_student): ?>
-                        <li><a href="student/sdashboard.php" class="nav-link">Dashboard</a></li>
-                        <li><a href="student/my_courses.php" class="nav-link">My Courses</a></li>
-                    <?php else: ?>
-                        <li><a href="admin/adminDashboard.php" class="nav-link">Dashboard</a></li>
-                    <?php endif; ?>
-                    <li><a href="logout.php" class="nav-link btn-login">Logout</a></li>
+                    <li><a href="<?php echo ($is_student ? 'student/sdashboard.php' : 'Teacher/tdashboard.php'); ?>" class="nav-link">Dashboard</a></li>
+                    <li><a href="logout.php" class="nav-link" style="color: #ff6b6b;">Logout</a></li>
                 <?php else: ?>
                     <li><a href="login.html" class="nav-link btn-login">Login</a></li>
-                    <li><a href="signup.html" class="nav-link btn-signup">Signup</a></li>
                 <?php endif; ?>
             </ul>
         </div>
     </nav>
 
-    <header class="courses-header">
-        <div class="header-content">
-            <h1>Explore Our Courses</h1>
-            <p>Discover hundreds of expertly-crafted courses from AASTMT faculty members</p>
-            <div class="search-bar">
-                <input type="text" placeholder="Search courses..." class="search-input" id="searchInput" />
-                <button class="search-btn" onclick="searchCourses()">Search</button>
-            </div>
+    <div class="search-bar-container">
+        <form method="GET" action="Courses.php">
+            <input type="text" name="search" class="search-input" placeholder="Search courses or instructors..." value="<?php echo htmlspecialchars($search); ?>">
+            <button type="submit" style="padding: 12px 20px; background: #4a90e2; color: white; border: none; border-radius: 6px; cursor: pointer;">Search</button>
+        </form>
+        <div style="margin-top: 20px;">
+            <a href="Courses.php?category=all" class="filter-btn <?php echo $category == 'all' ? 'active' : ''; ?>">All</a>
+            <a href="Courses.php?category=Technology" class="filter-btn <?php echo $category == 'Technology' ? 'active' : ''; ?>">Technology</a>
+            <a href="Courses.php?category=Business" class="filter-btn <?php echo $category == 'Business' ? 'active' : ''; ?>">Business</a>
+            <a href="Courses.php?category=Design" class="filter-btn <?php echo $category == 'Design' ? 'active' : ''; ?>">Design</a>
         </div>
-    </header>
+    </div>
 
     <main class="courses-main">
-        <aside class="filters-sidebar">
-            <form method="GET" id="filterForm">
-                <div class="filter-section">
-                    <h3 class="filter-title">Category (Demo)</h3>
-                    <div class="filter-options">
-                        <label class="filter-label">
-                            <input type="radio" name="category" value="all" <?php echo ($category === 'all') ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            All Categories
-                        </label>
-                        <label class="filter-label">
-                            <input type="radio" name="category" value="Engineering" <?php echo $category === 'Engineering' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            Engineering
-                        </label>
-                        <label class="filter-label">
-                            <input type="radio" name="category" value="Business" <?php echo $category === 'Business' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            Business
-                        </label>
-                        <label class="filter-label">
-                            <input type="radio" name="category" value="Technology" <?php echo $category === 'Technology' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            Technology
-                        </label>
-                    </div>
-                </div>
-
-                <div class="filter-section">
-                    <h3 class="filter-title">Level (Demo)</h3>
-                    <div class="filter-options">
-                        <label class="filter-label">
-                            <input type="radio" name="level" value="all" <?php echo ($level === 'all') ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            All Levels
-                        </label>
-                        <label class="filter-label">
-                            <input type="radio" name="level" value="Beginner" <?php echo $level === 'Beginner' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            Beginner
-                        </label>
-                        <label class="filter-label">
-                            <input type="radio" name="level" value="Advanced" <?php echo $level === 'Advanced' ? 'checked' : ''; ?> onchange="document.getElementById('filterForm').submit();">
-                            Advanced
-                        </label>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Apply Filters</button>
-            </form>
-        </aside>
-
-        <section class="courses-content">
-            <div class="courses-header-bar">
-                <p class="course-count">Showing <?php echo count($courses); ?> of <?php echo $total_courses; ?> courses</p>
-                <form method="GET" style="display: inline;">
-                    <select class="sort-select" name="sort" onchange="this.form.submit();">
-                        <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Sort by: Newest</option>
-                        <option value="popularity" <?php echo $sort === 'popularity' ? 'selected' : ''; ?>>Popularity</option>
-                        <option value="price_low" <?php echo $sort === 'price_low' ? 'selected' : ''; ?>>Price: Low to High</option>
-                    </select>
-                </form>
-            </div>
-
-            <div class="courses-grid">
-                <?php if (!empty($courses)): ?>
-                    <?php foreach ($courses as $course): 
-                        $is_enrolled = in_array($course['CourseID'], $enrolled_courses);
-                    ?>
-                        <div class="course-card">
-                            <div class="course-image-wrapper">
-                                <div class="course-img-placeholder" style="background-color: #1e293b; min-height: 160px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
-                                    <?php echo substr(htmlspecialchars($course['Title']), 0, 1); ?>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <h3 class="course-title"><?php echo htmlspecialchars($course['Title']); ?></h3>
-                                <p class="instructor"><?php echo htmlspecialchars($course['Instructor']); ?></p>
-                                
-                                <p class="course-description" style="font-size: 0.9em; color: #94a3b8; margin: 10px 0 15px 0; line-height: 1.4;">
-                                    <?php 
-                                        $desc = htmlspecialchars($course['Description']);
-                                        echo strlen($desc) > 70 ? substr($desc, 0, 70) . '...' : $desc; 
-                                    ?>
-                                </p>
-
-                                <div class="price-section" style="justify-content: flex-end; margin-top: auto;">
-                                    <?php if ($is_student): ?>
-                                        <?php if ($is_enrolled): ?>
-                                            <a href="student/course_detail.php?course_id=<?php echo $course['CourseID']; ?>" class="btn-enroll" style="background-color: #10b981;">Go to Course</a>
-                                        <?php else: ?>
-                                            <a href="student/checkout.php?course_id=<?php echo $course['CourseID']; ?>" class="btn-enroll">Enroll Now</a>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <a href="login.html" class="btn-enroll">Login to Enroll</a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
+        <div class="courses-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;">
+            <?php if (count($courses) > 0): ?>
+                <?php foreach ($courses as $course): 
+                    $is_enrolled = in_array($course['CourseID'], $enrolled_courses);
+                ?>
+                    <div class="course-card" style="background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column;">
+                        <div style="padding: 25px; flex-grow: 1;">
+                            <span class="level-badge" style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700;">
+                                <?php echo htmlspecialchars($course['Level'] ?? 'Beginner'); ?>
+                            </span>
+                            <h3 style="margin: 15px 0 5px 0; color: #1e293b;"><?php echo htmlspecialchars($course['Title']); ?></h3>
+                            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">By <?php echo htmlspecialchars($course['Instructor']); ?></p>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.6;">
+                                <?php echo htmlspecialchars(substr($course['Description'], 0, 90)) . '...'; ?>
+                            </p>
                         </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6b7280;">No courses found matching your criteria.</p>
-                <?php endif; ?>
-            </div>
-
-            <?php if ($total_pages > 1): ?>
-                <div class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="Courses.php?page=<?php echo $page - 1; ?>&sort=<?php echo $sort; ?>" class="pagination-btn">← Previous</a>
-                    <?php endif; ?>
-                    
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <?php if ($i == $page): ?>
-                            <button class="pagination-btn active"><?php echo $i; ?></button>
-                        <?php else: ?>
-                            <a href="Courses.php?page=<?php echo $i; ?>&sort=<?php echo $sort; ?>" class="pagination-btn"><?php echo $i; ?></a>
-                        <?php endif; ?>
-                    <?php endfor; ?>
-                    
-                    <?php if ($page < $total_pages): ?>
-                        <a href="Courses.php?page=<?php echo $page + 1; ?>&sort=<?php echo $sort; ?>" class="pagination-btn">Next →</a>
-                    <?php endif; ?>
+                        <div style="padding: 20px 25px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 800; color: #1e293b; font-size: 18px;"><?php echo number_format($course['Price'], 2); ?> L.E.</span>
+                            
+                            <?php if ($is_student): ?>
+                                <a href="<?php echo ($is_enrolled ? 'student/course_detail.php' : 'student/checkout.php'); ?>?course_id=<?php echo $course['CourseID']; ?>" 
+                                   style="background: #4a90e2; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 13px;">
+                                    <?php echo ($is_enrolled ? 'Go to Course' : 'Enroll Now'); ?>
+                                </a>
+                            <?php else: ?>
+                                <a href="login.html" style="background: #4a90e2; color: white; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-size: 13px;">Login to Enroll</a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div style="grid-column: 1 / -1; text-align: center; padding: 100px 0;">
+                    <h2 style="color: #64748b;">No courses found matching your criteria.</h2>
+                    <a href="Courses.php" style="color: #4a90e2; text-decoration: underline;">Clear all filters</a>
                 </div>
             <?php endif; ?>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2026 AASTMT Success Hub. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Contact Us</a>
-            </div>
         </div>
-    </footer>
 
-    <script>
-        function searchCourses() {
-            const searchTerm = document.getElementById('searchInput').value;
-            if (searchTerm) {
-                window.location.href = 'Courses.php?search=' + encodeURIComponent(searchTerm);
-            }
-        }
-    </script>
+        <?php if ($total_pages > 1): ?>
+            <div class="pagination">
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <a href="Courses.php?page=<?php echo $i; ?>&category=<?php echo $category; ?>&search=<?php echo $search; ?>&sort=<?php echo $sort; ?>" 
+                       class="page-link <?php echo ($i == $page) ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
+            </div>
+        <?php endif; ?>
+    </main>
 </body>
 </html>

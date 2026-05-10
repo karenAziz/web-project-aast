@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../DB/db_connect.php';
+require_once '../DB/db_connect.php'; // Uses: $servername, $username, $password, $dbname
 
 // SECURITY LOCK: Student Only
 if (!isset($_SESSION['Role']) || $_SESSION['Role'] !== 'student') {
@@ -20,13 +20,12 @@ $check_stmt = $conn->prepare("SELECT * FROM enrollments WHERE UserID = ? AND Cou
 $check_stmt->bind_param("ii", $user_id, $course_id);
 $check_stmt->execute();
 if ($check_stmt->get_result()->num_rows > 0) {
-    // If already enrolled, send them straight to their courses
     header("Location: my_courses.php");
     exit();
 }
 
-// 2. Fetch the course details
-$course_stmt = $conn->prepare("SELECT Title, Instructor FROM courses WHERE CourseID = ?");
+// 2. Fetch REAL course details including Price
+$course_stmt = $conn->prepare("SELECT Title, Instructor, Price FROM courses WHERE CourseID = ?");
 $course_stmt->bind_param("i", $course_id);
 $course_stmt->execute();
 $course_result = $course_stmt->get_result();
@@ -36,19 +35,15 @@ if ($course_result->num_rows === 0) {
 }
 $course = $course_result->fetch_assoc();
 
-// Simulated Price (Add a 'Price' column to your courses table later if needed)
-$course_price = 500.00; 
+// Dynamic Price from Database
+$course_price = floatval($course['Price']); 
 
 $error_msg = '';
 
-// 3. Handle the Payment and Enrollment Form Submission
+// 3. Handle Payment and Enrollment
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    // Start a SQL Transaction (Ensures both payment AND enrollment succeed, or neither do)
     $conn->begin_transaction();
-
     try {
-        // A. Insert into payments table
         $payment_status = 'Completed';
         $payment_date = date('Y-m-d H:i:s');
         
@@ -56,20 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pay_stmt->bind_param("dssii", $course_price, $payment_date, $payment_status, $user_id, $course_id);
         $pay_stmt->execute();
 
-        // B. Insert into enrollments table
         $enroll_stmt = $conn->prepare("INSERT INTO enrollments (UserID, CourseID) VALUES (?, ?)");
         $enroll_stmt->bind_param("ii", $user_id, $course_id);
         $enroll_stmt->execute();
 
-        // C. Commit the transaction to save it to the database
         $conn->commit();
-
-        // D. Redirect to My Courses
         header("Location: my_courses.php?status=enrolled");
         exit();
-
     } catch (Exception $e) {
-        // Rollback the transaction if an error occurs
         $conn->rollback();
         $error_msg = "Transaction failed: " . $e->getMessage();
     }
@@ -80,170 +69,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - AAST Extra Learning</title>
+    <title>Checkout | Success Hub</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        body { background-color: #f3f4f6; }
-        .checkout-container {
-            max-width: 800px;
-            margin: 60px auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-        
-        .order-summary {
-            background: linear-gradient(135deg, #010d1c 0%, #1a3a52 100%);
-            color: white;
-            padding: 40px;
-        }
-
-        .payment-form {
-            padding: 40px;
-        }
-
-        h2 { margin-bottom: 20px; font-size: 24px; color: #010d1c; }
-        .order-summary h2 { color: white; }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #4b5563;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .btn-pay {
-            width: 100%;
-            padding: 14px;
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
-
-        .btn-pay:hover { background-color: #357abd; }
-        
-        .price-tag {
-            font-size: 36px;
-            font-weight: 800;
-            margin: 20px 0;
-            color: #4a90e2;
-        }
-
-        .course-meta {
-            margin-bottom: 10px;
-            color: #d1d5db;
-        }
-
-        .error-message {
-            background-color: #fee2e2;
-            color: #dc2626;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        @media(max-width: 768px) {
-            .checkout-container { grid-template-columns: 1fr; }
-        }
+        body { background-color: #f3f4f6; font-family: sans-serif; }
+        .checkout-container { max-width: 850px; margin: 60px auto; display: grid; grid-template-columns: 1fr 1fr; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .order-summary { background: #010d1c; color: white; padding: 40px; }
+        .payment-form { padding: 40px; }
+        .price-tag { font-size: 32px; font-weight: 800; color: #4a90e2; margin: 20px 0; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; margin-top: 5px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-pay { width: 100%; padding: 15px; background: #4a90e2; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <h1 class="logo-text">AASTMT</h1>
-                <span class="logo-subtitle">Success Hub</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="sdashboard.php" class="nav-link">Dashboard</a></li>
-                <li><a href="../Courses.php" class="nav-link">Browse Courses</a></li>
-                <li><a href="my_courses.php" class="nav-link">My Courses</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="checkout-container">
         <div class="order-summary">
             <h2>Order Summary</h2>
-            <div class="course-meta">Course Title:</div>
-            <h3 style="font-size: 20px; margin-bottom: 20px;"><?php echo htmlspecialchars($course['Title']); ?></h3>
-            
-            <div class="course-meta">Instructor:</div>
-            <h4 style="margin-bottom: 30px;"><?php echo htmlspecialchars($course['Instructor']); ?></h4>
-            
-            <hr style="border-color: rgba(255,255,255,0.1); margin-bottom: 20px;">
-            
-            <div class="course-meta">Total Amount:</div>
+            <p style="margin-top:20px; opacity:0.8;">Course:</p>
+            <h3 style="margin-bottom:20px;"><?php echo htmlspecialchars($course['Title']); ?></h3>
+            <p style="opacity:0.8;">Instructor:</p>
+            <p><?php echo htmlspecialchars($course['Instructor']); ?></p>
             <div class="price-tag"><?php echo number_format($course_price, 2); ?> L.E.</div>
         </div>
 
         <div class="payment-form">
             <h2>Payment Details</h2>
-            
-            <?php if($error_msg): ?>
-                <div class="error-message"><?php echo $error_msg; ?></div>
-            <?php endif; ?>
-
+            <?php if($error_msg) echo "<p style='color:red;'>$error_msg</p>"; ?>
             <form method="POST">
                 <input type="hidden" name="course_id" value="<?php echo $course_id; ?>">
                 
-                <div class="form-group">
-                    <label>Name on Card</label>
-                    <input type="text" class="form-control" placeholder="John Doe" required>
-                </div>
-                
-                <div class="form-group">
+                <div style="margin-bottom:15px;">
                     <label>Card Number</label>
-                    <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                    <input type="text" id="cardNumber" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
                 </div>
                 
                 <div class="row">
-                    <div class="form-group">
+                    <div>
                         <label>Expiry Date</label>
-                        <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" required>
+                        <input type="text" id="expiryDate" class="form-control" placeholder="MM/YY" maxlength="5" required>
                     </div>
-                    <div class="form-group">
+                    <div>
                         <label>CVV</label>
                         <input type="text" class="form-control" placeholder="123" maxlength="3" required>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-pay">Pay & Enroll Now</button>
+                <button type="submit" class="btn-pay">Confirm Payment</button>
             </form>
         </div>
     </div>
 
+    <script>
+        // Automatic space after every 4 digits in Card Number
+        document.getElementById('cardNumber').addEventListener('input', function (e) {
+            let target = e.target;
+            let position = target.selectionEnd;
+            let length = target.value.length;
+            
+            target.value = target.value.replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim();
+            
+            if(target.value.length > length) position++;
+            target.setSelectionRange(position, position);
+        });
+
+        // Automatic slash in Expiry Date
+        document.getElementById('expiryDate').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/[^\d]/g, '');
+            if (value.length > 2) {
+                e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            } else {
+                e.target.value = value;
+            }
+        });
+    </script>
 </body>
 </html>
