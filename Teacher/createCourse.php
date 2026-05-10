@@ -39,13 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <h2>Teacher Portal</h2>
-        <a href="tdashboard.php">Dashboard</a>
-        <a href="createCourse.php" class="active">Create Course</a>
-        <a href="uploadLessons.php">Upload Lessons</a>
-        <a href="../logout.php" class="logout">Logout</a>
-    </aside>
+<aside class="sidebar">
+    <h2 style="padding: 20px; color: #4a90e2; font-size: 1.4rem;">Teacher Portal</h2>
+    <a href="tdashboard.php">Dashboard</a>
+    <a href="createCourse.php" class="active">Create Course</a>
+    <a href="../Courses.php">My Courses</a>
+    <a href="/web-project-aast/Teacher/upload_lessons.php">Upload Lessons</a>
+    <a href="manage_quizzes.php" style="border-left: 3px solid #f59e0b; color: white;">📝 Manage Quizzes</a>
+    <a href="../logout.php" class="logout" style="margin-top: auto; color: #ff6b6b; padding: 20px;">Logout</a>
+</aside>
 
     <main class="content">
         <div class="page-header"><h1>Add New Course</h1></div>
