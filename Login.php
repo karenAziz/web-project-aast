@@ -1,44 +1,44 @@
 <?php
 session_start();
-require('DB/db_connect.php');
+require_once 'DB/db_connect.php'; // Uses: $servername, $username, $password, $dbname
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   
-    $email = $conn->real_escape_string($_POST['emaill']);
-    $password_input = $_POST['passwordl'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $emailOrName = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-   
-    $sql = "SELECT * FROM users WHERE Email = '$email'";
-    $result = $conn->query($sql);
+    if ($emailOrName === '' || $password === '') {
+        header("Location: login.html?error=missing_fields");
+        exit();
+    }
 
-   
-    if ($result->num_rows == 1) {
+    $stmt = $conn->prepare("SELECT UserID, Name, Email, Password, Role FROM users WHERE Email = ? OR Name = ? LIMIT 1");
+    $stmt->bind_param('ss', $emailOrName, $emailOrName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result && $result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
-        // 4. Verify the hashed password
-        if (password_verify($password_input, $user['Password'])) {
-            
+        if (password_verify($password, $user['Password']) || $password === $user['Password']) {
             $_SESSION['UserID'] = $user['UserID'];
             $_SESSION['Name'] = $user['Name'];
             $_SESSION['Role'] = $user['Role'];
 
-         
-            if ($user['Role'] == 'student') {
-                header("Location: student/sdashboard.php");
-            } elseif ($user['Role'] == 'teacher') {
-                header("Location: teacher/tdashboard.php");
-            } elseif ($user['Role'] == 'admin') {
+            if ($user['Role'] === 'admin') {
                 header("Location: admin/adminDashboard.php");
+            } elseif ($user['Role'] === 'teacher') {
+                header("Location: Teacher/tdashboard.php");
+            } else {
+                header("Location: student/sdashboard.php");
             }
             exit();
-
-        } else {
-          
-            echo "<script>alert('Invalid password. Please try again.'); window.location.href='login.html';</script>";
         }
-    } else {
-       
-        echo "<script>alert('No account found with that email.'); window.location.href='login.html';</script>";
+
+        header("Location: login.html?error=invalid_pass");
+        exit();
     }
+
+    header("Location: login.html?error=no_user");
+    exit();
 }
 ?>

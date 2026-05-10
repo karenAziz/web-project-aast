@@ -1,43 +1,47 @@
 <?php
 session_start();
-include '../DB/db_connect.php'; 
+require_once '../DB/db_connect.php'; 
 
-// SECURITY LOCK: Teacher Only
 if (!isset($_SESSION['Role']) || $_SESSION['Role'] !== 'teacher') {
-    header("Location: ../login.php");
+    header("Location: ../login.html");
     exit();
 }
+
+$teacher_name = $_SESSION['Name'];
+$courses_res = $conn->query("SELECT * FROM courses WHERE Instructor = '$teacher_name'");
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Dashboard - Helpy</title>
-    <link rel="stylesheet" href="../style.css" />
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="tDashboard.css">
 </head>
 <body>
-
-<div class="admin-container">
-    <div class="sidebar">
+    <nav class="sidebar">
         <h2>Teacher Portal</h2>
-        <a href="tdashboard.php" style="background-color: #1a2a35; border-left: 4px solid #4a90e2;">Dashboard</a>
-        <a href="my_courses.php">My Courses</a>
-        <a href="create_course.php">Create / Edit Course</a>
+        <a href="tdashboard.php" class="active">Dashboard</a>
+        <a href="create_course.php">Create Course</a>
         <a href="upload_lessons.php">Upload Lessons</a>
-        <a href="manage_quizzes.php">Manage Quizzes</a>
-        <a href="student_progress.php">Student Progress</a>
-        <a href="profile.php">Profile / Settings</a>
-        <a href="../logout.php" style="color: #ff6b6b; margin-top: 50px;">Logout</a>
-    </div>
-
-    <div class="main-content">
-        <div class="welcome-card">
-            <h1>Welcome back, Professor <?php echo htmlspecialchars($_SESSION['Name']); ?>!</h1>
-            <p>You can manage your courses and check student progress from the menu on the left.</p>
-        </div>
-    </div>
-</div>
-
+        <a href="../logout.php" style="color: #ff7675; margin-top: auto;">Logout</a>
+    </nav>
+    <main class="content">
+        <header class="page-header">
+            <h1>Welcome back, Professor <?php echo htmlspecialchars($teacher_name); ?>!</h1>
+        </header>
+        <section class="table-container">
+            <table>
+                <thead><tr><th>COURSE NAME</th><th>STATUS</th></tr></thead>
+                <tbody>
+                    <?php while($row = $courses_res->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['Title']); ?></td>
+                        <td><span class="status-badge live">Live</span></td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </section>
+    </main>
 </body>
 </html>

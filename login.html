@@ -3,56 +3,196 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Login | Success Hub</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Modern Navbar Styling for Login Page */
+      .navbar {
+        background: #010d1c;
+        padding: 15px 0;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+      }
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .logo-text {
+        color: white;
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+      }
+      .logo-subtitle {
+        color: #4a90e2;
+        font-size: 13px;
+        margin-left: 5px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+        margin: 0;
+      }
+      .nav-link {
+        text-decoration: none;
+        color: #d1d5db;
+        font-size: 14px;
+        font-weight: 500;
+        transition: 0.3s;
+      }
+      .nav-link:hover {
+        color: #4a90e2;
+      }
+      .btn-signup-nav {
+        background: #4a90e2;
+        color: white !important;
+        padding: 8px 20px;
+        border-radius: 6px;
+      }
+
+      /* Adjusting the login card to account for the fixed navbar */
+      body {
+        background: #f1f4f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .login-card {
+        margin-top: 60px; /* Space for the fixed navbar */
+        background: #010d1c;
+        padding: 40px;
+        border-radius: 12px;
+        width: 400px;
+        color: white;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+    </style>
   </head>
   <body>
     <nav class="navbar">
       <div class="nav-container">
         <div class="logo">
-          <h1 class="logo-text">AASTMT</h1>
+          <span class="logo-text">AASTMT</span>
           <span class="logo-subtitle">Success Hub</span>
         </div>
         <ul class="nav-links">
           <li><a href="index.html" class="nav-link">Home</a></li>
-          <li><a href="aboutus.html" class="nav-link">About Us</a></li>
-          <li><a href="Courses.php" class="nav-link">Courses</a></li>
-          <li><a href="login.html" class="nav-link active">Login</a></li>
-          <li><a href="signup.html" class="nav-link btn-signup">Signup</a></li>
+          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="courses.php" class="nav-link">Courses</a></li>
+          <li>
+            <a href="signup.html" class="nav-link btn-signup-nav">Signup</a>
+          </li>
         </ul>
       </div>
     </nav>
 
-    <form method="post" action="login.php">
-      <div class="login_1container">
-        <div class="login_form">
-          <h1>Welcome Back!</h1>
-          <div class="form-group">
-            <label for="email">Username or Email</label>
-            <input
-              type="text"
-              id="email"
-              name="emaill"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="passwordl"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-          <button type="submit" class="login-btn">Login</button>
-          <p class="signup-link">
-            Don't have an account? <a href="signup.html">Sign up here</a>
-          </p>
+    <div class="login-card">
+      <h2 style="text-align: center; margin-bottom: 30px">Welcome Back!</h2>
+
+      <div
+        id="messageBox"
+        style="
+          color: #ff6b6b;
+          font-size: 13px;
+          text-align: center;
+          margin-bottom: 15px;
+          display: none;
+        "
+      ></div>
+
+      <form action="Login.php" method="POST">
+        <div style="margin-bottom: 20px">
+          <label
+            style="
+              display: block;
+              margin-bottom: 8px;
+              font-size: 14px;
+              color: #d1d5db;
+            "
+            >Username or Email</label
+          >
+          <input
+            type="text"
+            name="email"
+            placeholder="Enter your email"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: none;
+              border-radius: 6px;
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              outline: none;
+            "
+            required
+          />
         </div>
-      </div>
-    </form>
+        <div style="margin-bottom: 25px">
+          <label
+            style="
+              display: block;
+              margin-bottom: 8px;
+              font-size: 14px;
+              color: #d1d5db;
+            "
+            >Password</label
+          >
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: none;
+              border-radius: 6px;
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              outline: none;
+            "
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          style="
+            width: 100%;
+            padding: 12px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+          "
+        >
+          Login
+        </button>
+      </form>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const message = document.getElementById("messageBox");
+      const error = params.get("error");
+      if (error) {
+        message.style.display = "block";
+        if (error === "no_user") message.textContent = "Account not found.";
+        else if (error === "invalid_pass")
+          message.textContent = "Incorrect password.";
+      }
+    </script>
   </body>
 </html>
