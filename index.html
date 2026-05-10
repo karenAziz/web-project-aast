@@ -1,148 +1,241 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AAST Extra | Learning Marketplace</title>
+    <title>AASTMT Success Hub | Excellence in Every Skill</title>
     <link rel="stylesheet" href="./style.css" />
-  </head>
-  <body>
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="logo">
-          <h1 class="logo-text">AASTMT</h1>
-          <span class="logo-subtitle">Success Hub</span>
+    
+    <style>
+        /* Hero Enhancements */
+        .hero {
+            background: linear-gradient(135deg, rgba(1, 13, 28, 0.9) 0%, rgba(26, 58, 82, 0.9) 100%), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1920&q=80') center/cover;
+            padding: 120px 20px;
+            text-align: center;
+            color: white;
+        }
+        .hero-title { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; }
+        .hero-subtitle { font-size: 1.2rem; max-width: 600px; margin: 0 auto 40px auto; color: #e2e8f0; line-height: 1.6; }
+        .btn { padding: 14px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; display: inline-block; margin: 0 10px; }
+        .btn-primary { background: #4a90e2; color: white; border: 2px solid #4a90e2; }
+        .btn-primary:hover { background: #357abd; border-color: #357abd; transform: translateY(-2px); }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+        .btn-secondary:hover { background: white; color: #010d1c; transform: translateY(-2px); }
+
+        /* Features Section */
+        .features-section { padding: 80px 20px; background: #f8fafc; text-align: center; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; max-width: 1200px; margin: 50px auto 0 auto; }
+        .feature-card { background: white; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: transform 0.3s; }
+        .feature-card:hover { transform: translateY(-5px); }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 20px; color: #4a90e2; }
+        .feature-title { font-size: 1.2rem; color: #0f172a; margin-bottom: 15px; font-weight: 700; }
+        .feature-desc { color: #64748b; line-height: 1.6; font-size: 0.95rem; }
+
+        /* Course Grid Enhancements */
+        .courses-section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-title { font-size: 2.2rem; color: #0f172a; font-weight: 800; }
+        .section-subtitle { color: #64748b; font-size: 1.1rem; margin-top: 10px; }
+        .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .course-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; border: 1px solid #f1f5f9; }
+        .course-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+        .course-image-wrapper { height: 200px; background-color: #e2e8f0; position: relative; overflow: hidden; }
+        .course-img-placeholder { width: 100%; height: 100%; background-size: cover; background-position: center; transition: transform 0.5s; }
+        .course-card:hover .course-img-placeholder { transform: scale(1.05); }
+        .badge { position: absolute; top: 15px; left: 15px; background: #f59e0b; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-content { padding: 25px; }
+        .course-title { font-size: 1.2rem; color: #1e293b; margin-bottom: 8px; font-weight: 700; }
+        .instructor { color: #64748b; font-size: 0.9rem; margin-bottom: 15px; }
+        .rating-section { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 0.9rem; }
+        .rating { color: #fbbf24; font-weight: 700; }
+        .review-count { color: #94a3b8; }
+        .price-section { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 20px; }
+        .price { font-size: 1.3rem; font-weight: 800; color: #0f172a; }
+        .btn-enroll { background: #f8fafc; color: #4a90e2; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: background 0.3s; }
+        .btn-enroll:hover { background: #eff6ff; }
+        .view-all-btn { text-align: center; margin-top: 50px; }
+
+        /* Premium Footer */
+        .footer { background: #010d1c; color: #cbd5e1; padding: 60px 20px 20px 20px; }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; border-bottom: 1px solid #1e293b; padding-bottom: 40px; margin-bottom: 20px; }
+        .footer-logo { color: white; font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; }
+        .footer-heading { color: white; font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { color: #cbd5e1; text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: #4a90e2; }
+        .footer-bottom { text-align: center; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    
+    <nav class="navbar" style="background: #010d1c; padding: 15px 0;">
+        <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div class="logo">
+                <h1 style="color: white; font-size: 24px; margin: 0;">AASTMT <span style="font-weight: 400; font-size: 14px; opacity: 0.7;">Success Hub</span></h1>
+            </div>
+            <ul class="nav-links" style="display: flex; gap: 25px; list-style: none; margin: 0; align-items: center;">
+                <li><a href="index.html" style="color: #4a90e2; text-decoration: none; font-size: 14px; font-weight: 600;">Home</a></li>
+                <li><a href="aboutus.html" style="color: #d1d5db; text-decoration: none; font-size: 14px; font-weight: 500;">About Us</a></li>
+                <li><a href="Courses.php" style="color: #d1d5db; text-decoration: none; font-size: 14px; font-weight: 500;">Courses</a></li>
+                <li><a href="login.html" style="color: #d1d5db; text-decoration: none; font-size: 14px; font-weight: 500;">Login</a></li>
+                <li><a href="signup.html" style="background: #4a90e2; color: white; padding: 8px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">Signup</a></li>
+            </ul>
         </div>
-        <ul class="nav-links">
-          <li><a href="index.html" class="nav-link active">Home</a></li>
-          <li><a href="aboutus.html" class="nav-link">About Us</a></li>
-          <li><a href="Courses.php" class="nav-link">Courses</a></li>
-          <li><a href="login.html" class="nav-link btn-login">Login</a></li>
-          <li><a href="signup.html" class="nav-link btn-signup">Signup</a></li>
-        </ul>
-      </div>
     </nav>
 
     <header class="hero">
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <h1 class="hero-title">Excellence in Every Skill</h1>
-        <p class="hero-subtitle">
-          Access high-quality extra-curricular courses developed by AASTMT
-          experts to boost your professional profile.
-        </p>
-        <div class="hero-buttons">
-          <a href="Courses.php" class="btn btn-primary">Explore Courses</a>
-          <a href="signup.html" class="btn btn-secondary">Get Started</a>
+        <div class="hero-content">
+            <h1 class="hero-title">Excellence in Every Skill</h1>
+            <p class="hero-subtitle">
+                Access high-quality, auto-graded extra-curricular courses developed by AASTMT experts to instantly boost your professional and academic profile.
+            </p>
+            <div class="hero-buttons">
+                <a href="Courses.php" class="btn btn-primary">Explore Courses</a>
+                <a href="signup.html" class="btn btn-secondary">Get Started Today</a>
+            </div>
         </div>
-      </div>
     </header>
 
-    <main class="container">
-      <section class="courses-section">
+    <section class="features-section">
         <div class="section-header">
-          <h2 class="section-title">Featured Courses</h2>
-          <p class="section-subtitle">
-            Enhance your academic journey with specialized training modules
-          </p>
+            <h2 class="section-title">Why Choose Success Hub?</h2>
+            <p class="section-subtitle">Designed specifically for the ambitious AAST student.</p>
         </div>
-
-        <div class="course-grid">
-          <div class="course-card">
-            <div class="course-image-wrapper">
-              <img
-                src="../imgs/autocad.webp"
-                alt="Mastering AutoCAD 2026"
-                class="course-img"
-              />
-              <div class="badge bestseller">Bestseller</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <h3 class="feature-title">Expert Instructors</h3>
+                <p class="feature-desc">Learn directly from verified AASTMT professors and industry professionals who understand your curriculum.</p>
             </div>
-            <div class="card-content">
-              <h3 class="course-title">Mastering AutoCAD 2026</h3>
-              <p class="instructor">Eng. Ahmed Ali, AAST Engineering</p>
-              <div class="rating-section">
-                <div class="rating">4.9 ★★★★★</div>
-                <span class="review-count">(1,240 reviews)</span>
-              </div>
-              <div class="price-section">
-                <span class="price">499.99 EGP</span>
-                <a href="#" class="btn-enroll">Enroll Now</a>
-              </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Auto-Graded Quizzes</h3>
+                <p class="feature-desc">Test your knowledge immediately with our built-in interactive quiz system and track your progress in real-time.</p>
             </div>
-          </div>
-
-          <div class="course-card">
-            <div class="course-image-wrapper">
-              <div
-                class="course-img-placeholder"
-                style="
-                  background-image: url(&quot;../imgs/data-analysis-1024x576.webp&quot;);
-                "
-              ></div>
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <h3 class="feature-title">Learn Anywhere</h3>
+                <p class="feature-desc">Access high-definition video lectures and course materials securely from your laptop or mobile device.</p>
             </div>
-            <div class="card-content">
-              <h3 class="course-title">Python for Data Analysis</h3>
-              <p class="instructor">AAST Computing Center</p>
-              <div class="rating-section">
-                <div class="rating">4.8 ★★★★★</div>
-                <span class="review-count">(3,100 reviews)</span>
-              </div>
-              <div class="price-section">
-                <span class="price">799.99 EGP</span>
-                <a href="#" class="btn-enroll">Enroll Now</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card">
-            <div class="course-image-wrapper">
-              <div
-                class="course-img-placeholder"
-                style="background-image: url(&quot;../imgs/excel.webp&quot;)"
-              ></div>
-            </div>
-            <div class="card-content">
-              <h3 class="course-title">Advanced Excel for Business</h3>
-              <p class="instructor">Dr. Nadia Hassan, AAST Management</p>
-              <div class="rating-section">
-                <div class="rating">4.7 ★★★★☆</div>
-                <span class="review-count">(950 reviews)</span>
-              </div>
-              <div class="price-section">
-                <span class="price">399.99 EGP</span>
-                <a href="#" class="btn-enroll">Enroll Now</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="course-card">
-            <div class="course-image-wrapper">
-              <div
-                class="course-img-placeholder"
-                style="
-                  background-image: url(&quot;https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=300&q=80&quot;);
-                "
-              ></div>
-            </div>
-            <div class="card-content">
-              <h3 class="course-title">Maritime Safety & Security</h3>
-              <p class="instructor">Capt. Sameh Omar, Maritime College</p>
-              <div class="rating-section">
-                <div class="rating">4.6 ★★★★☆</div>
-                <span class="review-count">(420 reviews)</span>
-              </div>
-              <div class="price-section">
-                <span class="price">120.00 EGP</span>
-                <a href="#" class="btn-enroll">Enroll Now</a>
-              </div>
-            </div>
-          </div>
         </div>
+    </section>
 
-        <div class="view-all-btn">
-          <a href="Courses.html" class="btn btn-large">View All Courses</a>
-        </div>
-      </section>
+    <main class="container">
+        <section class="courses-section">
+            <div class="section-header">
+                <h2 class="section-title">Featured Courses</h2>
+                <p class="section-subtitle">Enhance your academic journey with specialized training modules</p>
+            </div>
+
+            <div class="course-grid">
+                <div class="course-card">
+                    <div class="course-image-wrapper">
+                        <div class="badge bestseller">Bestseller</div>
+                        <div class="course-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=600&q=80');"></div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="course-title">Mastering AutoCAD 2026</h3>
+                        <p class="instructor">Eng. Ahmed Ali, AAST Engineering</p>
+                        <div class="rating-section">
+                            <div class="rating">4.9 ★★★★★</div>
+                            <span class="review-count">(1,240 reviews)</span>
+                        </div>
+                        <div class="price-section">
+                            <span class="price">499.00 L.E.</span>
+                            <a href="login.html" class="btn-enroll">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-image-wrapper">
+                        <div class="course-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80');"></div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="course-title">Python for Data Analysis</h3>
+                        <p class="instructor">AAST Computing Center</p>
+                        <div class="rating-section">
+                            <div class="rating">4.8 ★★★★★</div>
+                            <span class="review-count">(3,100 reviews)</span>
+                        </div>
+                        <div class="price-section">
+                            <span class="price">799.00 L.E.</span>
+                            <a href="login.html" class="btn-enroll">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-image-wrapper">
+                        <div class="course-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80');"></div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="course-title">Advanced Excel for Business</h3>
+                        <p class="instructor">Dr. Nadia Hassan, AAST Management</p>
+                        <div class="rating-section">
+                            <div class="rating">4.7 ★★★★☆</div>
+                            <span class="review-count">(950 reviews)</span>
+                        </div>
+                        <div class="price-section">
+                            <span class="price">399.00 L.E.</span>
+                            <a href="login.html" class="btn-enroll">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-image-wrapper">
+                        <div class="course-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1534398079543-7ae6d016b86a?auto=format&fit=crop&w=600&q=80');"></div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="course-title">Maritime Safety & Security</h3>
+                        <p class="instructor">Capt. Sameh Omar, Maritime College</p>
+                        <div class="rating-section">
+                            <div class="rating">4.6 ★★★★☆</div>
+                            <span class="review-count">(420 reviews)</span>
+                        </div>
+                        <div class="price-section">
+                            <span class="price">120.00 L.E.</span>
+                            <a href="login.html" class="btn-enroll">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-all-btn">
+                <a href="Courses.php" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem;">Explore All Courses →</a>
+            </div>
+        </section>
     </main>
-  </body>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo">AASTMT Success Hub</div>
+                <p style="color: #94a3b8; line-height: 1.6;">Empowering students with industry-ready skills and knowledge through expert-led online education.</p>
+            </div>
+            <div>
+                <h4 class="footer-heading">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Courses.php">Browse Courses</a></li>
+                    <li><a href="aboutus.html">About Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-heading">Account</h4>
+                <ul class="footer-links">
+                    <li><a href="login.html">Student Login</a></li>
+                    <li><a href="login.html">Teacher Portal</a></li>
+                    <li><a href="signup.html">Create Account</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Arab Academy for Science, Technology and Maritime Transport. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
 </html>
