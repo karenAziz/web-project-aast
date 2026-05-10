@@ -1,5 +1,53 @@
 <?php
 session_start();
+
+// 1. BULLETPROOF YOUTUBE CONVERTER
+function getYouTubeEmbedUrl($url) {
+    $url = trim($url);
+    
+    // Force https:// if they forgot it
+    if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+        $url = "https://" . $url;
+    }
+
+    $parsed_url = parse_url($url);
+    $video_id = false;
+
+    if (isset($parsed_url['host'])) {
+        $host = strtolower($parsed_url['host']);
+        
+        // Handle standard youtube.com links
+        if (strpos($host, 'youtube.com') !== false) {
+            if (isset($parsed_url['path']) && strpos($parsed_url['path'], '/embed/') === 0) {
+                return $url; // Already an embed link
+            }
+            if (isset($parsed_url['path']) && strpos($parsed_url['path'], '/shorts/') === 0) {
+                $video_id = str_replace('/shorts/', '', $parsed_url['path']);
+            }
+            elseif (isset($parsed_url['query'])) {
+                parse_str($parsed_url['query'], $query_vars);
+                if (isset($query_vars['v'])) {
+                    $video_id = $query_vars['v'];
+                }
+            }
+        } 
+        // Handle youtu.be short links
+        elseif ($host === 'youtu.be') {
+            $video_id = ltrim($parsed_url['path'], '/');
+        }
+    }
+
+    // If we found a video ID, return the perfect embed link
+    if ($video_id) {
+        $video_id = explode('?', $video_id)[0];
+        $video_id = explode('&', $video_id)[0];
+        return "https://www.youtube.com/embed/" . $video_id;
+    }
+
+    // If all else fails, return what they typed
+    return $url; 
+}
+
 require_once '../DB/db_connect.php';
 
 // Security Lock
@@ -47,18 +95,15 @@ if ($lesson_id > 0) {
     <title><?php echo htmlspecialchars($course['Title']); ?> | Success Hub</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        /* Navbar Button Fixes */
         .nav-links { display: flex; align-items: center; gap: 20px; list-style: none; }
         .nav-link { text-decoration: none; color: #4a90e2; font-weight: 500; font-size: 14px; transition: 0.3s; }
         .nav-link:hover { color: #357abd; }
         .btn-logout { color: #ef4444 !important; border: 1px solid #ef4444; padding: 6px 15px; border-radius: 6px; }
         .btn-logout:hover { background: #fef2f2; }
 
-        /* Layout */
         .view-container { display: grid; grid-template-columns: 1fr 320px; gap: 30px; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .video-box { background: #000; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .video-box { background: #000; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; }
         
-        /* Sidebar Styling Fixes */
         .lesson-sidebar { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         .sidebar-title { font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 20px; }
         .lesson-btn { 
@@ -93,10 +138,14 @@ if ($lesson_id > 0) {
     <div class="view-container">
         <main>
             <div class="video-box">
-                <?php if ($current_lesson && !empty($current_lesson['VideoURL'])): ?>
-                    <iframe width="100%" height="100%" src="<?php echo htmlspecialchars($current_lesson['VideoURL']); ?>" frameborder="0" allowfullscreen></iframe>
+                <?php if ($current_lesson && !empty($current_lesson['VideoURL'])): 
+                    $final_url = getYouTubeEmbedUrl($current_lesson['VideoURL']);
+                ?>
+
+                    <iframe width="100%" style="flex-grow: 1;" src="<?php echo htmlspecialchars($final_url); ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                
                 <?php else: ?>
-                    <div style="height:100%; display:flex; align-items:center; justify-content:center; color:white; font-size:14px;">
+                    <div style="height:100%; display:flex; align-items:center; justify-content:center; color:white; font-size:14px; padding: 50px;">
                         No video found. Please select a lesson from the sidebar.
                     </div>
                 <?php endif; ?>
