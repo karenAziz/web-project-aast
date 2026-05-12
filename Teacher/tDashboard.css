@@ -1,4 +1,4 @@
-/* Core Layout Reset */
+
 * {
   margin: 0;
   padding: 0;
@@ -12,7 +12,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Fixed Sidebar */
 .sidebar {
   width: 260px;
   background-color: #1a233a;
@@ -21,7 +20,7 @@ body {
   flex-direction: column;
   padding: 20px 0;
   position: fixed;
-  top: 0; /* Changed from 70px to 0 to remove top gap */
+  top: 0; 
   bottom: 0;
   left: 0;
   z-index: 900;
@@ -43,7 +42,7 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Main Content Area */
+
 .content {
   margin-left: 260px; /* Match Sidebar Width */
   margin-top: 0; /* Changed from 70px to 0 to remove top gap */
@@ -52,7 +51,7 @@ body {
   min-height: 100vh;
 }
 
-/* Header Banner inside content */
+
 .page-header {
   background: white;
   padding: 30px;
@@ -67,7 +66,7 @@ body {
   margin: 0;
 }
 
-/* Table container styling */
+
 .table-container {
   background: white;
   border-radius: 12px;
@@ -75,7 +74,7 @@ body {
   padding: 25px;
 }
 
-/* Red Logout at the bottom */
+/
 .logout {
   color: #ff6b6b !important;
   text-decoration: none;

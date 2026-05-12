@@ -1,4 +1,4 @@
-/* General Layout */
+
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +12,6 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar Styling (Consistent with your screenshots) */
 .sidebar {
     width: 260px;
     background-color: #1a2a44;
@@ -43,7 +42,7 @@ body {
 .sidebar-footer { padding: 20px; border-top: 1px solid #2d3a5a; }
 .logout { color: #ff7675; text-decoration: none; font-weight: bold; }
 
-/* Main Content Area */
+
 .content {
     margin-left: 260px;
     padding: 40px;
@@ -61,7 +60,7 @@ body {
 .page-header h1 { font-size: 1.8rem; color: #1a233a; }
 .page-header p { color: #64748b; margin-top: 5px; }
 
-/* Settings Cards */
+
 .settings-container {
     display: flex;
     flex-direction: column;
@@ -89,7 +88,7 @@ body {
     padding: 25px;
 }
 
-/* Forms */
+
 .input-group {
     margin-bottom: 20px;
 }

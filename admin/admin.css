@@ -100,7 +100,7 @@ body {
   color: #ffffff;
 }
 
-/* Data Tables */
+
 .table-container {
   background: white;
   border-radius: 12px;
@@ -179,11 +179,7 @@ body {
   background-color: #ef4444;
   color: white;
 }
-/* =========================================
-   ADMIN FORM STYLES
-   ========================================= */
 
-/* The white card housing the form */
 .admin-form-card {
   background: white;
   padding: 30px 40px;
@@ -193,12 +189,11 @@ body {
   margin-top: 20px;
 }
 
-/* Spacing for each input section */
 .admin-form-group {
   margin-bottom: 20px;
 }
 
-/* Label styling */
+
 .admin-form-group label {
   display: block;
   margin-bottom: 8px;
@@ -207,7 +202,7 @@ body {
   font-size: 14px;
 }
 
-/* Input and Select dropdown styling */
+
 .admin-form-group input,
 .admin-form-group select {
   width: 100%;
@@ -220,7 +215,7 @@ body {
   transition: border-color 0.3s ease;
 }
 
-/* Blue glow effect on focus */
+
 .admin-form-group input:focus,
 .admin-form-group select:focus {
   outline: none;
@@ -228,14 +223,10 @@ body {
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
-/* Specific fix for dropdowns */
 .admin-form-group select {
   background-color: white;
   cursor: pointer;
 }
-/* =========================================
-   REPORTS PAGE SPECIFIC STYLES
-   ========================================= */
 
 .report-card {
   border: 1px solid #e2e8f0;
@@ -246,7 +237,7 @@ body {
   font-weight: 700;
 }
 
-/* Custom width for distribution bars if needed */
+
 .progress-bar-container {
   width: 100%;
   background-color: #f1f5f9;

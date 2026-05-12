@@ -72,7 +72,7 @@ if ($is_student) {
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; margin: 0; }
         
-        /* Banner & Search Area */
+  
         .search-banner { 
             background: linear-gradient(135deg, #010d1c 0%, #1a3a52 100%); 
             padding: 50px 20px; 
@@ -103,7 +103,7 @@ if ($is_student) {
         }
         .search-btn:hover { background: #357abd; }
 
-        /* Filter Buttons */
+      
         .filter-btn { 
             padding: 10px 22px; 
             background: rgba(255,255,255,0.1); 
@@ -124,7 +124,7 @@ if ($is_student) {
             box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
         }
 
-        /* Course Cards */
+    
         .courses-main { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
         .courses-grid { 
             display: grid; 
@@ -155,7 +155,7 @@ if ($is_student) {
             align-items: center; 
         }
         
-        /* Badges & Typography */
+     
         .level-badge { 
             background: #e0f2fe; 
             color: #0369a1; 
@@ -185,7 +185,7 @@ if ($is_student) {
         .btn-enrolled { background: #10b981; }
         .btn-enrolled:hover { background: #059669; }
 
-        /* Pagination */
+    
         .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 50px; }
         .page-link { 
             padding: 10px 16px; 

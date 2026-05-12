@@ -1,8 +1,4 @@
-/* =========================================
-   ABOUT US PAGE STYLES
-   ========================================= */
 
-/* About Us Hero Section */
 .about-hero {
   position: relative;
   min-height: 400px;
@@ -14,7 +10,6 @@
   text-align: center;
 }
 
-/* "We shape the future..." text */
 .about-hero-title {
   position: relative;
   z-index: 2;
@@ -30,12 +25,12 @@
   margin: 0 auto;
 }
 
-/* Main Content Container */
+
 .about-container {
   padding: 60px 20px;
 }
 
-/* Mission Box (White Card) */
+
 .mission-grid {
   background: white;
   border-radius: 12px;
@@ -69,7 +64,7 @@
   margin-bottom: 20px;
 }
 
-/* Statistics Strip at the bottom */
+
 .stats-strip {
   background: linear-gradient(135deg, #010d1c 0%, #1a2f4e 100%);
   padding: 60px 20px;
@@ -94,7 +89,6 @@
   letter-spacing: 1px;
 }
 
-/* Responsive Design for Mobile */
 @media (max-width: 768px) {
   .about-hero-title {
     font-size: 32px;
